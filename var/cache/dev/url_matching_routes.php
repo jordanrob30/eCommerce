@@ -15,6 +15,8 @@ return [
         '/_profiler/open' => [[['_route' => '_profiler_open_file', '_controller' => 'web_profiler.controller.profiler::openAction'], null, null, null, false, false, null]],
         '/api/users' => [[['_route' => 'users', '_controller' => 'App\\Controller\\DefaultController::getUsers'], null, null, null, false, false, null]],
         '/verify/email' => [[['_route' => 'app_verify_email', '_controller' => 'App\\Controller\\RegistrationController::verifyUserEmail'], null, null, null, false, false, null]],
+        '/api/users/create' => [[['_route' => 'api_usersapi_users_create', '_controller' => 'App\\Controller\\UsersController::createUser'], null, ['POST' => 0], null, false, false, null]],
+        '/api/users/read/all' => [[['_route' => 'api_usersapi_users_read_all', '_controller' => 'App\\Controller\\UsersController::readUsers'], null, ['GET' => 0], null, false, false, null]],
     ],
     [ // $regexpList
         0 => '{^(?'
@@ -39,6 +41,11 @@ return [
                     .'|in(*:213)'
                     .'|out(*:224)'
                 .')'
+                .'|/api/users/(?'
+                    .'|read/id/([^/]++)(*:263)'
+                    .'|update/([^/]++)(*:286)'
+                    .'|delete/([^/]++)(*:309)'
+                .')'
             .')/?$}sDu',
     ],
     [ // $dynamicRoutes
@@ -52,8 +59,11 @@ return [
         179 => [[['_route' => 'home', 'reactRouting' => null, '_controller' => 'App\\Controller\\DefaultController::index'], ['reactRouting'], null, null, false, true, null]],
         196 => [[['_route' => 'app_register', '_controller' => 'App\\Controller\\RegistrationController::register'], [], null, null, false, false, null]],
         213 => [[['_route' => 'app_login', '_controller' => 'App\\Controller\\SecurityController::login'], [], null, null, false, false, null]],
-        224 => [
-            [['_route' => 'app_logout', '_controller' => 'App\\Controller\\SecurityController::logout'], [], null, null, false, false, null],
+        224 => [[['_route' => 'app_logout', '_controller' => 'App\\Controller\\SecurityController::logout'], [], null, null, false, false, null]],
+        263 => [[['_route' => 'api_usersapi_users_read', '_controller' => 'App\\Controller\\UsersController::readUser'], ['id'], ['GET' => 0], null, false, true, null]],
+        286 => [[['_route' => 'api_usersapi_users_update', '_controller' => 'App\\Controller\\UsersController::updateUser'], ['id'], ['PUT' => 0], null, false, true, null]],
+        309 => [
+            [['_route' => 'api_usersapi_users_delete', '_controller' => 'App\\Controller\\UsersController::deleteUser'], ['id'], ['DELETE' => 0], null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],
     ],

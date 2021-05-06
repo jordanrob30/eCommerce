@@ -21,4 +21,9 @@ return [
     'app_verify_email' => [[], ['_controller' => 'App\\Controller\\RegistrationController::verifyUserEmail'], [], [['text', '/verify/email']], [], []],
     'app_login' => [[], ['_controller' => 'App\\Controller\\SecurityController::login'], [], [['text', '/login']], [], []],
     'app_logout' => [[], ['_controller' => 'App\\Controller\\SecurityController::logout'], [], [['text', '/logout']], [], []],
+    'api_usersapi_users_create' => [[], ['_controller' => 'App\\Controller\\UsersController::createUser'], [], [['text', '/api/users/create']], [], []],
+    'api_usersapi_users_read_all' => [[], ['_controller' => 'App\\Controller\\UsersController::readUsers'], [], [['text', '/api/users/read/all']], [], []],
+    'api_usersapi_users_read' => [['id'], ['_controller' => 'App\\Controller\\UsersController::readUser'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/users/read/id']], [], []],
+    'api_usersapi_users_update' => [['id'], ['_controller' => 'App\\Controller\\UsersController::updateUser'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/users/update']], [], []],
+    'api_usersapi_users_delete' => [['id'], ['_controller' => 'App\\Controller\\UsersController::deleteUser'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/users/delete']], [], []],
 ];
