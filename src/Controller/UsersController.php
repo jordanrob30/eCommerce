@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\Json;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
 * @Route("/api/users", name="api_users")
@@ -31,7 +31,7 @@ class UsersController extends AbstractController
     }
 
     /**
-    * @Route("/read/all", name="api_users_read_all", methods={"GET"})
+    * @Route("/read/all/", name="api_users_read_all", methods={"GET"})
     */
     public function readUsers(): JsonResponse
     {
@@ -52,7 +52,7 @@ class UsersController extends AbstractController
     }
 
     /**
-    * @Route("/read/id/{id}", name="api_users_read", methods={"GET"} )
+    * @Route("/read/all/id/{id}", name="api_users_read", methods={"GET"} )
     */
     public function readUser($id): JsonResponse
     {
@@ -70,10 +70,26 @@ class UsersController extends AbstractController
     }
 
     /**
-    * @Route("/update/{id}", name="api_users_update", methods={"PUT"})
+    * @Route("/update/{field}/{id}", name="api_users_update", methods={"PUT"})
+    * 
     */
-    public function updateUser(): JsonResponse
+    public function updateUser($feild, $id, Request $request): JsonResponse
     {
+        $user = $this->userRepository->findOneBy(['id' => $id]);
+        $data = json_decode($request->getContent(), true)['data'];
+
+        switch ($feild) {
+            case 'firstname':
+                $user->setFirstname($data);
+                break;
+            case 'lastname':
+                $user->setLastname($data);
+                break;
+            default:
+                break;
+        }
+
+        $user->setModifiedtime(new \DateTime());
         return $this->readUsers();
     }
 
