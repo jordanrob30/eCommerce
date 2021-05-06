@@ -106,13 +106,13 @@ class ProductsController extends AbstractController
         $product = $this->productRepository->findOneBy(['id' => $id]);
         $data = json_decode($request->getContent(), true)['data'];
 
-        /**
+        
         switch ($feild) {
             case 'name':
                 $product->setName($data);
                 break;
             case 'description':
-                $product->setLastname($data);
+                $product->setDescription($data);
                 break;
             case 'buyPrice':
                 $product->setBuyprice($data);
@@ -131,7 +131,7 @@ class ProductsController extends AbstractController
             default:
                 break;
         }
-        */
+        
 
         $product->setModifiedtime(new \DateTime());
         $this->productRepository->updateProduct($product);
