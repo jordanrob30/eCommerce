@@ -1,0 +1,2 @@
+export const READ_PRODUCTS_ALL = 'READ_PRODUCTS_ALL';
+export const ERROR_PRODUCTS = 'ERROR_PRODUCTS';
