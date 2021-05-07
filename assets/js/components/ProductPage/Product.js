@@ -1,6 +1,6 @@
 import { Card, CardContent, CardMedia, CardActions, Typography, IconButton, makeStyles } from '@material-ui/core'
-import { AddShoppingCart } from '@material-ui/icons';
-
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
 import React from 'react'
 import Chips from './Chips';
 
@@ -14,8 +14,8 @@ const useStyles = makeStyles({
       paddingTop: '56.25%', // 16:9
     },
     cardActions: {
-      //display: 'flex',
-      //justifyContent: 'flex-end',
+      display: 'flex',
+      justifyContent: 'flex-end',
     },
     cardContent: {
       display: 'flex',
@@ -46,9 +46,14 @@ const Product = ({product}) => {
                 </CardContent>
                 <CardActions disableSpacing className={classes.cardActions}>
                     <Chips tags={product.tags}/>
-                    <IconButton aria-label="Add to Cart">
-                        <AddShoppingCart />
-                    </IconButton>
+                    {product.stock > 0 ? 
+                        <IconButton aria-label="Add to Cart">
+                            <AddShoppingCartIcon />
+                        </IconButton> :
+                        <IconButton aria-label="Out of Stock">
+                            <RemoveShoppingCartIcon />
+                        </IconButton>
+                    }
                 </CardActions>
             </Card> 
         </>
