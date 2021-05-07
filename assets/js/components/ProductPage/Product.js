@@ -2,6 +2,7 @@ import { Card, CardContent, CardMedia, CardActions, Typography, IconButton, make
 import { AddShoppingCart } from '@material-ui/icons';
 
 import React from 'react'
+import Chips from './Chips';
 
 const useStyles = makeStyles({
     root: {
@@ -13,8 +14,8 @@ const useStyles = makeStyles({
       paddingTop: '56.25%', // 16:9
     },
     cardActions: {
-      display: 'flex',
-      justifyContent: 'flex-end',
+      //display: 'flex',
+      //justifyContent: 'flex-end',
     },
     cardContent: {
       display: 'flex',
@@ -40,10 +41,11 @@ const Product = ({product}) => {
                         </Typography>
                     </div>
                     <Typography gutterBottom dangerouslySetInnerHTML={{ __html: product.description }} variant="body2" color="textSecondary" component="p" />
+                    
 
                 </CardContent>
                 <CardActions disableSpacing className={classes.cardActions}>
-                    
+                    <Chips tags={product.tags}/>
                     <IconButton aria-label="Add to Cart">
                         <AddShoppingCart />
                     </IconButton>
