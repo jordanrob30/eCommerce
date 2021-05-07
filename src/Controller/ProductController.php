@@ -97,22 +97,52 @@ class ProductController extends AbstractController
         return new JsonResponse($data);
     }
 
+
     /**
-     * @Route("/update/{field}/{id}", name="api_products_update", methods={"PUT"})
+     * @Route("/update/all/{id}", name="api_products_update_field", methods={"PUT"})
      *
      */
-    public function updateProduct($feild, $id, Request $request): JsonResponse
+    public function updateProduct($id, Request $request): JsonResponse
+    {
+        $product = $this->productRepository->findOneBy(['id' => $id]);
+        $data = json_decode($request->getContent(), true)['data'];
+        
+        try {
+            !empty($data['name']) ? $product->setName($data['name']) : null;
+            !empty($data['description']) ? $product->setDescription($data['description']) : null;
+            !empty($data['buyPrice']) ? $product->setBuyprice($data['buyPrice']) : null;        
+            !empty($data['sellPrice']) ? $product->setSellprice($data['sellPrice']) : null;
+            !empty($data['category']) ? $product->setCategory($data['category']) : null;
+            !empty($data['tags']) ? $product->setTags($data['tags']) : null;
+            !empty($data['stock']) ? $product->setStock($data['stock']) : null;
+
+            $product->setModifiedtime(new \DateTime());
+            $this->productRepository->updateProduct($product);
+        } catch (\Throwable $th){
+            
+        }
+
+        return $this->readProducts();
+    }
+
+
+
+    /**
+     * @Route("/update/{field}/{id}", name="api_products_update_field", methods={"PUT"})
+     *
+     */
+    public function updateProductFeild($field, $id, Request $request): JsonResponse
     {
         $product = $this->productRepository->findOneBy(['id' => $id]);
         $data = json_decode($request->getContent(), true)['data'];
 
-        /**
-        switch ($feild) {
+        
+        switch ($field) {
         case 'name':
         $product->setName($data);
         break;
         case 'description':
-        $product->setLastname($data);
+        $product->setDescription($data);
         break;
         case 'buyPrice':
         $product->setBuyprice($data);
@@ -130,8 +160,7 @@ class ProductController extends AbstractController
         $product->setStock($data);
         default:
         break;
-        }
-         */
+        };
 
         $product->setModifiedtime(new \DateTime());
         $this->productRepository->updateProduct($product);
