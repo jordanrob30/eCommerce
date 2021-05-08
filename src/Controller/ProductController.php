@@ -84,25 +84,32 @@ class ProductController extends AbstractController
      */
     public function readProductsByField($field, $search): JsonResponse
     {
-        $products = $this->productRepository->findBy([$field => $search]);
-        
-        $data  = [];
 
-        foreach($products as $product){
-            $data[] = [
-                'id' => $product->getId(),
-                'name' => $product->getName(),
-                'description' => $product->getDescription(),
-                'buyPrice' => $product->getBuyprice(),
-                'sellPrice' => $product->getSellprice(),
-                'category' => $product->getCategory(),
-                'tags' => $product->getTags(),
-                'stock' => $product->getStock(),
-                'imageSource' => $product->getImagesource()
-            ];
+        try{
+            $products = $this->productRepository->findBy([$field => $search]);
+            $data  = [];
+
+            foreach($products as $product){
+                $data[] = [
+                    'id' => $product->getId(),
+                    'name' => $product->getName(),
+                    'description' => $product->getDescription(),
+                    'buyPrice' => $product->getBuyprice(),
+                    'sellPrice' => $product->getSellprice(),
+                    'category' => $product->getCategory(),
+                    'tags' => $product->getTags(),
+                    'stock' => $product->getStock(),
+                    'imageSource' => $product->getImagesource()
+                ];
+            
+            return new JsonResponse($data);
         }
+        }catch (\Throwable $th){
+            return new JsonResponse([]);
+        }
+        
 
-        return new JsonResponse($data);
+        
     }
 
     /**
