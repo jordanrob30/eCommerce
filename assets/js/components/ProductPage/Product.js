@@ -30,7 +30,7 @@ const Product = ({product}) => {
     return (
         <>
             <Card className={classes.root}>
-                <CardMedia className={classes.media} image={"https://picsum.photos/seed/"+ product.name +"/400"} title={product.name} />
+                <CardMedia className={classes.media} image={product.imageSource} title={product.name} />
                 <CardContent>
                     <div className={classes.cardContent}>
                         <Typography variant="h5" component="h2">
