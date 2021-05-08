@@ -69,6 +69,11 @@ class Product
      */
     private $orderProducts;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $imagesource;
+
     public function __construct()
     {
         $this->orderProducts = new ArrayCollection();
@@ -213,6 +218,18 @@ class Product
                 $orderProduct->setProductid(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getImagesource(): ?string
+    {
+        return $this->imagesource;
+    }
+
+    public function setImagesource(string $imagesource): self
+    {
+        $this->imagesource = $imagesource;
 
         return $this;
     }
