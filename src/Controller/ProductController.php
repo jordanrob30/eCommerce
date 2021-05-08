@@ -45,11 +45,12 @@ class ProductController extends AbstractController
 
 
             $this->productRepository->saveProduct($product);
+            return $this->readProducts();
         }catch (\Throwable $th) {
-
+            return new JsonResponse($th);
         }
 
-        return $this->readProducts();
+        
     }
 
     /**
@@ -118,11 +119,12 @@ class ProductController extends AbstractController
 
             $product->setModifiedtime(new \DateTime());
             $this->productRepository->updateProduct($product);
+            return $this->readProducts();
         } catch (\Throwable $th){
-            
+            return new JsonResponse($th);
         }
 
-        return $this->readProducts();
+        
     }
 
 
@@ -131,7 +133,7 @@ class ProductController extends AbstractController
      * @Route("/update/{field}/{id}", name="api_products_update_field", methods={"PUT"})
      *
      */
-    public function updateProductFeild($field, $id, Request $request): JsonResponse
+    public function updateProductField($field, $id, Request $request): JsonResponse
     {
         $product = $this->productRepository->findOneBy(['id' => $id]);
         $data = json_decode($request->getContent(), true)['data'];
