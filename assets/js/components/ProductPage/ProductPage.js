@@ -32,7 +32,9 @@ const ProductPage = () => {
                         <Product product={product} />
                     </Grid>
                 ))}
+                <Grid item xs={12}/>
             </Grid>
+            <Divider variant="middle"/>
         </Container>
     )
 }
