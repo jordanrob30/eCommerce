@@ -1,9 +1,9 @@
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import '../styles/app.css';
-import {ProductPage, TaskBar} from './components'
+import {NotFound, ProductPage, StoreHome, TaskBar} from './components'
 
 import themes from '../styles/themes';
 import axios from 'axios';
@@ -41,8 +41,21 @@ const App = () => {
         <ThemeProvider theme={themes}>
                 <CssBaseline/>
                 <Router>
-                    <TaskBar categories={categories} changeCategories={changeCategories}/>
-                    <ProductPage products={products} title={title}/>
+                    <Switch>
+                        <Route exact path="/">
+                            <TaskBar categories={categories} changeCategories={changeCategories}/>
+                            <ProductPage products={products} title={title}/>
+                        </Route>
+                        
+                        <Route path="/admin">
+                            <StoreHome/>
+                        </Route>
+
+
+                        <Route>
+                            <NotFound/>
+                        </Route>
+                    </Switch>
                 </Router>
         </ThemeProvider>
     )
