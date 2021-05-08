@@ -10,19 +10,23 @@ import axios from 'axios';
 
 const App = () => {
     const [products, setProducts] = useState([])
+    const [categories, setCategories] = useState([])
     const [title, setTitle] = useState('All Products')
 
     useEffect(() => {
         axios.get('/api/products/read/all/')
             .then(res => setProducts(res.data))
             .catch(err => console.error(err));
+        axios.get('/api/category/read/all/')
+            .then(res => setCategories(res.data))
+            .catch(err => console.error(err));  
     }, [])
 
     return (
         <ThemeProvider theme={themes}>
                 <CssBaseline/>
                 <Router>
-                    <TaskBar />
+                    <TaskBar categories={categories}/>
                     <ProductPage products={products} title={title}/>
                 </Router>
         </ThemeProvider>

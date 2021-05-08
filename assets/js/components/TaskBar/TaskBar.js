@@ -15,14 +15,14 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-const TaskBar = () => {
+const TaskBar = ({categories}) => {
 
 	const [openMenu, setOpenMenu] = useState(false)
     const classes = useStyles();
 
     return (
       	<>
-		  	<MenuDrawer open={openMenu} setOpen={setOpenMenu}/>
+		  	<MenuDrawer open={openMenu} setOpen={setOpenMenu} categories={categories}/>
         	<AppBar position="fixed">
 				<Toolbar>
 					<IconButton onClick={() => setOpenMenu(true)} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
