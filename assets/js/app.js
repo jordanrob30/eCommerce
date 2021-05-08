@@ -22,11 +22,26 @@ const App = () => {
             .catch(err => console.error(err));  
     }, [])
 
+
+    const changeCategories = (category = "*") => {
+        if (category === "*") {
+            axios.get('/api/products/read/all/')
+                .then(res => setProducts(res.data))
+                .catch(err => console.error(err));
+            setTitle('All Products');
+        } else {
+            axios.get('/api/products/read/all/category/'+category)
+                .then(res => setProducts(res.data))
+                .catch(err => console.error(err));
+            setTitle(category);
+        }
+    };
+
     return (
         <ThemeProvider theme={themes}>
                 <CssBaseline/>
                 <Router>
-                    <TaskBar categories={categories}/>
+                    <TaskBar categories={categories} changeCategories={changeCategories}/>
                     <ProductPage products={products} title={title}/>
                 </Router>
         </ThemeProvider>

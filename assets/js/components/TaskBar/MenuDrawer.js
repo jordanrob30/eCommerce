@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     
 });
 
-const MenuDrawer = ({open, setOpen, categories}) => {
+const MenuDrawer = ({open, setOpen, categories, changeCategories}) => {
     const classes = useStyles();
     return (
         <SwipeableDrawer
@@ -45,8 +45,12 @@ const MenuDrawer = ({open, setOpen, categories}) => {
             <Divider />
             <Typography variant="h5" className={classes.text}>Categories</Typography>
             <List className={classes.list}>
+                <ListItem button key={"All Products"} onClick={() => changeCategories()}>
+                    <ListItemIcon><ChevronRight/></ListItemIcon>
+                    <ListItemText primary="All Products"/>
+                </ListItem>
                 {categories.map((category) => (
-                    <ListItem button key={category.name}>
+                    <ListItem button key={category.name} onClick={() => changeCategories(category.name)}>
                         <ListItemIcon><ChevronRight/></ListItemIcon>
                         <ListItemText primary={category.name}/>
                     </ListItem>

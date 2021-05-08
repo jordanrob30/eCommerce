@@ -101,9 +101,8 @@ class ProductController extends AbstractController
                     'stock' => $product->getStock(),
                     'imageSource' => $product->getImagesource()
                 ];
-            
+            }
             return new JsonResponse($data);
-        }
         }catch (\Throwable $th){
             return new JsonResponse([]);
         }
