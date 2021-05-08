@@ -25,6 +25,7 @@ const MenuDrawer = ({open, setOpen, categories, changeCategories}) => {
             open={open}
             onClose={() => setOpen(false)}
             onOpen={() => setOpen(true)}
+            swipeAreaWidth = {40}
             
         >
             <div className={classes.div}>
