@@ -80,6 +80,32 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @Route("/read/all/{field}/{search}", name="api_products_read_all_by_feild", methods={"GET"})
+     */
+    public function readProductsByField($field, $search): JsonResponse
+    {
+        $products = $this->productRepository->findBy([$field => $search]);
+        
+        $data  = [];
+
+        foreach($products as $product){
+            $data[] = [
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'description' => $product->getDescription(),
+                'buyPrice' => $product->getBuyprice(),
+                'sellPrice' => $product->getSellprice(),
+                'category' => $product->getCategory(),
+                'tags' => $product->getTags(),
+                'stock' => $product->getStock(),
+                'imageSource' => $product->getImagesource()
+            ];
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
      * @Route("/read/all/id/{id}", name="api_products_read", methods={"GET"} )
      */
     public function readProduct($id): JsonResponse
@@ -109,6 +135,7 @@ class ProductController extends AbstractController
     public function updateProduct($id, Request $request): JsonResponse
     {
         $product = $this->productRepository->findOneBy(['id' => $id]);
+        
         $data = json_decode($request->getContent(), true)['data'];
         
         try {
