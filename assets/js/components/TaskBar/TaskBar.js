@@ -2,6 +2,7 @@ import { AppBar, Toolbar, Button, IconButton, Typography, makeStyles } from '@ma
 import React, { useState } from 'react';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuDrawer from './MenuDrawer';
+import { Person } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -15,14 +16,14 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-const TaskBar = ({ theme, toggleTheme, categories, changeCategories}) => {
+const TaskBar = ({ login, theme, toggleTheme, categories, changeCategories}) => {
 
 	const [openMenu, setOpenMenu] = useState(false)
     const classes = useStyles(theme);
 
     return (
       	<>
-		  	<MenuDrawer open={openMenu} setOpen={setOpenMenu} theme={theme} toggleTheme={toggleTheme} categories={categories} changeCategories={changeCategories}/>
+		  	<MenuDrawer open={openMenu} setOpen={setOpenMenu} theme={theme} toggleTheme={toggleTheme} login={login} categories={categories} changeCategories={changeCategories}/>
         	<AppBar position="fixed">
 				<Toolbar>
 					<IconButton onClick={() => setOpenMenu(true)} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
@@ -31,7 +32,10 @@ const TaskBar = ({ theme, toggleTheme, categories, changeCategories}) => {
 					<Typography variant="h6" className={classes.title}>
 						Ecommerce
 					</Typography>
-					<Button color="inherit">Login</Button>
+					{login.user ? 
+						<IconButton><Person/></IconButton>:
+						<Button color="inherit" onClick={() => login.setDialog(true)}>Login</Button>
+					}
 				</Toolbar>
         	</AppBar>
         	<Toolbar/>

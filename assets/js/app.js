@@ -3,16 +3,19 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import '../styles/app.css';
-import {NotFound, ProductPage, StoreHome, TaskBar} from './components'
+import {NotFound, ProductPage, StoreHome, TaskBar, LoginDialog} from './components'
 
 import themes from '../styles/themes';
 import axios from 'axios';
 
 const App = () => {
     const [products, setProducts] = useState([])
+    const [user, setUser] = useState(null);
     const [categories, setCategories] = useState([])
     const [title, setTitle] = useState('All Products');
     const [theme, setTheme] = useState(themes.dark);
+    const [loginDialogOpen, setLoginDialogOpen] = useState(false)
+    
 
     useEffect(() => {
         axios.get('/api/products/read/all/')
@@ -23,6 +26,22 @@ const App = () => {
             .catch(err => console.error(err));  
     }, [])
 
+
+    const loginUser = (_user) => {
+        if(_user) {
+            setUser(_user);
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    const login = {
+        user: user,
+        setUser: loginUser,
+        dialog: loginDialogOpen,
+        setDialog: setLoginDialogOpen 
+    }
 
     const toggleTheme = () => {
         switch (theme.palette.type) {
@@ -36,7 +55,6 @@ const App = () => {
                 break;
         }
     }
-
 
     const changeCategories = (category = "*") => {
         if (category === "*") {
@@ -58,7 +76,14 @@ const App = () => {
                 <Router>
                     <Switch>
                         <Route exact path="/">
-                            <TaskBar theme={theme} toggleTheme={toggleTheme} categories={categories} changeCategories={changeCategories}/>
+                            <LoginDialog login={login}/>
+                            <TaskBar 
+                                login={login}
+                                theme={theme} 
+                                toggleTheme={toggleTheme} 
+                                categories={categories} 
+                                changeCategories={changeCategories}
+                            />
                             <ProductPage products={products} title={title}/>
                         </Route>
                         

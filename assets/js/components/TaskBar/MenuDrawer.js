@@ -1,5 +1,5 @@
 import { Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, makeStyles, SwipeableDrawer, Typography } from '@material-ui/core'
-import { Brightness2Rounded, Brightness7Rounded, ChevronLeft, ChevronRight } from '@material-ui/icons'
+import { Brightness2Rounded, Brightness7Rounded, ChevronLeft, ChevronRight, Person } from '@material-ui/icons'
 import React from 'react'
 
 const useStyles = makeStyles({
@@ -17,20 +17,23 @@ const useStyles = makeStyles({
     
 });
 
-const MenuDrawer = ({open, setOpen, theme, toggleTheme, categories, changeCategories}) => {
+const MenuDrawer = ({open, setOpen, theme, toggleTheme, login, categories, changeCategories}) => {
     const classes = useStyles();
-    const themeIcon = (theme) => (
-        (theme.palette.type==='dark') ? 
-            <Brightness2Rounded/> : 
-            <Brightness7Rounded/>
-    )
-
+    const themeIcon = theme.palette.type==='dark' ? <Brightness2Rounded/> : <Brightness7Rounded/>;
+    const loginTitle = login.user ? "Account" : "Login";
+    const loginAction = login.user ? () => console.log() : () => login.setDialog(true);
+   
 
     const actions = [
         {
             title:"Toggle Theme", 
             action: toggleTheme, 
-            icon: themeIcon(theme)
+            icon: themeIcon
+        },
+        {
+            title: loginTitle,
+            action: loginAction,
+            icon: <Person/>
         }
     ]
 
