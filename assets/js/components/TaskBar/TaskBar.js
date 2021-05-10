@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Button, IconButton, Typography, makeStyles } from '@material-ui/core';
+import { AppBar, Toolbar, Button, IconButton, Typography, makeStyles, useTheme } from '@material-ui/core';
 import React, { useState } from 'react';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuDrawer from './MenuDrawer';
@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-const TaskBar = ({ login, theme, toggleTheme, categories, changeCategories}) => {
-
+const TaskBar = ({ login, toggleTheme, categories, changeCategories}) => {
+	const theme = useTheme();
 	const [openMenu, setOpenMenu] = useState(false)
     const classes = useStyles(theme);
 
@@ -36,6 +36,7 @@ const TaskBar = ({ login, theme, toggleTheme, categories, changeCategories}) => 
 						<IconButton><Person/></IconButton>:
 						<Button color="inherit" onClick={() => login.setDialog(true)}>Login</Button>
 					}
+
 				</Toolbar>
         	</AppBar>
         	<Toolbar/>
