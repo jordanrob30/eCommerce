@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,11 +23,29 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/create", name="api_users_create", methods={"POST"})
+     * @Route("/register", name="api_users_create", methods={"POST"})
      */
-    public function createUser(): JsonResponse
+    public function createUser(Request $request): JsonResponse
     {
-        return $this->readUsers();
+        $data = json_decode($request->getContent(), true);
+
+        try {
+            $user = new User;
+            $user
+                ->setEmail($data['email'])
+                ->setRoles($data['roles'])
+                ->setPassword($data['password'])
+                ->setFirstname($data['firstname'])
+                ->setLastname($data['lastname'])
+                ->setExternalStripeId('')
+                ->setCreatedtime(new \DateTime())
+                ->setModifiedtime(new \DateTime());;
+            
+            $this->userRepository->saveUser($user);
+            return $this->readUsers();
+        }catch(\Throwable $th){
+            return new JsonResponse($th);
+        }
     }
 
     /**
