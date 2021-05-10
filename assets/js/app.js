@@ -27,13 +27,12 @@ const App = () => {
     }, [])
 
 
-    const loginUser = (_user) => {
-        if(_user) {
-            setUser(_user);
-            return true;
-        }else {
-            return false;
-        }
+    const loginUser = async(_user) => {
+        await axios.put('/api/users/auth/init', _user)
+            .then(res => res.data.auth_token === 'successful' ? setUser(_user) : null)
+            .catch(error => (console.error(error)));
+
+        return ((user) ? true : false)
     }
 
     const login = {
