@@ -11,7 +11,8 @@ import axios from 'axios';
 const App = () => {
     const [products, setProducts] = useState([])
     const [categories, setCategories] = useState([])
-    const [title, setTitle] = useState('All Products')
+    const [title, setTitle] = useState('All Products');
+    const [theme, setTheme] = useState(themes.dark);
 
     useEffect(() => {
         axios.get('/api/products/read/all/')
@@ -21,6 +22,20 @@ const App = () => {
             .then(res => setCategories(res.data))
             .catch(err => console.error(err));  
     }, [])
+
+
+    const toggleTheme = () => {
+        switch (theme.palette.type) {
+            case 'dark':
+                setTheme(themes.light);
+                break;
+            case 'light':
+                setTheme(themes.dark);
+                break;
+            default:
+                break;
+        }
+    }
 
 
     const changeCategories = (category = "*") => {
@@ -38,12 +53,12 @@ const App = () => {
     };
 
     return (
-        <ThemeProvider theme={themes}>
+        <ThemeProvider theme={theme}>
                 <CssBaseline/>
                 <Router>
                     <Switch>
                         <Route exact path="/">
-                            <TaskBar categories={categories} changeCategories={changeCategories}/>
+                            <TaskBar theme={theme} toggleTheme={toggleTheme} categories={categories} changeCategories={changeCategories}/>
                             <ProductPage products={products} title={title}/>
                         </Route>
                         
