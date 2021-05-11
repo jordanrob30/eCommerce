@@ -1,8 +1,7 @@
 import { AppBar, Toolbar, Button, IconButton, Typography, makeStyles } from '@material-ui/core';
-import React from 'react';
-import MenuIcon from '@material-ui/icons/Menu';
+import React, { useState } from 'react';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
       flexGrow: 1,
     },
@@ -14,26 +13,21 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-const TaskBar = () => {
-
+const AdminTaskBar = () => {
     const classes = useStyles();
 
     return (
-      	<>
-        	<AppBar position="fixed">
+        <>
+            <AppBar position="fixed">
 				<Toolbar>
-					<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-						<MenuIcon />
-					</IconButton>
 					<Typography variant="h6" className={classes.title}>
-						Ecommerce
+						Ecommerce Admin
 					</Typography>
-					<Button color="inherit">Login</Button>
 				</Toolbar>
         	</AppBar>
         	<Toolbar/>
-      	</>
+        </>
     )
 }
 
-export default TaskBar
+export default AdminTaskBar

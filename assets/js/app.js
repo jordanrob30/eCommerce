@@ -1,20 +1,46 @@
-import { CssBaseline, ThemeProvider, Divider } from '@material-ui/core';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import '../styles/app.css';
-import {ProductPage, TaskBar} from './components'
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
+import React, { useState } from 'react';
+import {render} from 'react-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import {NotFound, AdminPage, MainPage} from './components'
 
 import themes from '../styles/themes';
 
 const App = () => {
+    const [theme, setTheme] = useState(themes.dark);
+
+    const toggleTheme = () => {
+        switch (theme.palette.type) {
+            case 'dark':
+                setTheme(themes.light);
+                break;
+            case 'light':
+                setTheme(themes.dark);
+                break;
+            default:
+                break;
+        }
+    }
+
     return (
-        <ThemeProvider theme={themes}>
+        <ThemeProvider theme={theme}>
                 <CssBaseline/>
                 <Router>
-                    <TaskBar />
-                    <ProductPage/>
-                    
+                    <Switch>
+                        <Route path="/home">
+                            <MainPage toggleTheme={toggleTheme}/>
+                        </Route>
+                        
+                        <Route path="/admin">
+                            <AdminPage/>
+                        </Route>
+
+                        <Redirect from="/" to="/home" />
+
+                        <Route>
+                            <NotFound/>
+                        </Route>
+                    </Switch>
                 </Router>
         </ThemeProvider>
     )
@@ -24,4 +50,4 @@ export default App
 
 
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+render(<App/>, document.getElementById('root'));

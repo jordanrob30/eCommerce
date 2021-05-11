@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,11 +24,29 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/create", name="api_users_create", methods={"POST"})
+     * @Route("/register", name="api_users_create", methods={"POST"})
      */
-    public function createUser(): JsonResponse
+    public function createUser(Request $request): JsonResponse
     {
-        return $this->readUsers();
+        $data = json_decode($request->getContent(), true);
+
+        try {
+            $user = new User;
+            $user
+                ->setEmail($data['email'])
+                ->setRoles($data['roles'])
+                ->setPassword($data['password'])
+                ->setFirstname($data['firstname'])
+                ->setLastname($data['lastname'])
+                ->setExternalStripeId('')
+                ->setCreatedtime(new \DateTime())
+                ->setModifiedtime(new \DateTime());;
+            
+            $this->userRepository->saveUser($user);
+            return $this->readUsers();
+        }catch(\Throwable $th){
+            return new JsonResponse($th);
+        }
     }
 
     /**
@@ -99,4 +119,43 @@ class UserController extends AbstractController
     {
         return $this->readUsers();
     }
+
+    /**
+     * @Route("/auth/init"), name="api_user_auth_init", methods={"PUT"}
+     */
+    public function initAuthUser(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $user = $this->userRepository->findOneBy(['email' => $data['email']]);
+        try{
+            if($user->getPassword() === $data['password'])
+            {
+                return new JsonResponse(['auth_token' => 'successful']);
+            }else{
+                throw new \Throwable("Authentication failed");
+            }
+        }catch(\Throwable $th) {
+            return new JsonResponse($th);
+        }
+    }
+
+    /**
+     * @Route("/auth"), name="api_user_auth", methods={"PUT"}
+     */
+    public function authUser(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        try{
+            if($data['auth_token'] === "successful")
+            {
+                return new JsonResponse(true);
+            }else{
+                return new JsonResponse(false);
+            }
+        }catch(\Throwable $th) {
+            return new JsonResponse($th->getMessage());
+        }
+    }
+
+
 }

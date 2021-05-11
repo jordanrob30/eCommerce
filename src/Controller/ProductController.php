@@ -40,6 +40,7 @@ class ProductController extends AbstractController
                 ->setCategory($data['category'])        //@string
                 ->setTags($data['tags'])                //@Array[string]
                 ->setStock($data['stock'])              //@int
+                ->setImagesource($data['imageSource'])  //@string
                 ->setCreatedtime(new \DateTime())
                 ->setModifiedtime(new \DateTime());
 
@@ -71,10 +72,43 @@ class ProductController extends AbstractController
                 'category' => $product->getCategory(),
                 'tags' => $product->getTags(),
                 'stock' => $product->getStock(),
+                'imageSource' => $product->getImagesource()
             ];
         }
 
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/read/all/{field}/{search}", name="api_products_read_all_by_feild", methods={"GET"})
+     */
+    public function readProductsByField($field, $search): JsonResponse
+    {
+
+        try{
+            $products = $this->productRepository->findBy([$field => $search]);
+            $data  = [];
+
+            foreach($products as $product){
+                $data[] = [
+                    'id' => $product->getId(),
+                    'name' => $product->getName(),
+                    'description' => $product->getDescription(),
+                    'buyPrice' => $product->getBuyprice(),
+                    'sellPrice' => $product->getSellprice(),
+                    'category' => $product->getCategory(),
+                    'tags' => $product->getTags(),
+                    'stock' => $product->getStock(),
+                    'imageSource' => $product->getImagesource()
+                ];
+            }
+            return new JsonResponse($data);
+        }catch (\Throwable $th){
+            return new JsonResponse([]);
+        }
+        
+
+        
     }
 
     /**
@@ -93,6 +127,7 @@ class ProductController extends AbstractController
             'category' => $product->getCategory(),
             'tags' => $product->getTags(),
             'stock' => $product->getStock(),
+            'imageSource' => $product->getImagesource()
         ];
 
         return new JsonResponse($data);
@@ -106,6 +141,7 @@ class ProductController extends AbstractController
     public function updateProduct($id, Request $request): JsonResponse
     {
         $product = $this->productRepository->findOneBy(['id' => $id]);
+        
         $data = json_decode($request->getContent(), true)['data'];
         
         try {
@@ -116,6 +152,7 @@ class ProductController extends AbstractController
             !empty($data['category']) ? $product->setCategory($data['category']) : null;
             !empty($data['tags']) ? $product->setTags($data['tags']) : null;
             !empty($data['stock']) ? $product->setStock($data['stock']) : null;
+            !empty($data['imageSource']) ? $product->setImagesource($data['imageSource']) : null;
 
             $product->setModifiedtime(new \DateTime());
             $this->productRepository->updateProduct($product);
@@ -141,27 +178,31 @@ class ProductController extends AbstractController
         
         switch ($field) {
         case 'name':
-        $product->setName($data);
-        break;
+            $product->setName($data);
+            break;
         case 'description':
-        $product->setDescription($data);
-        break;
+            $product->setDescription($data);
+            break;
         case 'buyPrice':
-        $product->setBuyprice($data);
-        break;
+            $product->setBuyprice($data);
+            break;
         case 'sellPrice':
-        $product->setSellprice($data);
-        break;
+            $product->setSellprice($data);
+            break;
         case 'category':
-        $product->setCategory($data);
-        break;
+            $product->setCategory($data);
+            break;
         case 'tags':
-        $product->setTags($data);
-        break;
+            $product->setTags($data);
+            break;
         case 'stock':
-        $product->setStock($data);
+            $product->setStock($data);
+            break;
+        case 'imageSource':
+            $product->setImagesource($data);
+            break;
         default:
-        break;
+            break;
         };
 
         $product->setModifiedtime(new \DateTime());
