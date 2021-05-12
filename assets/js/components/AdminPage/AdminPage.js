@@ -1,4 +1,5 @@
-import { Container, Divider, Grid } from '@material-ui/core'
+import { Accordion, Typography, AccordionSummary, Container, Divider, Grid } from '@material-ui/core'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 
@@ -22,13 +23,42 @@ const AdminPage = () => {
 					<Grid item xs={12}/>
 					
 					<Grid item xs={12} md={6} lg={4}>
-						<CreateProductForm categories={categories}/>
+						<Accordion defaultExpanded>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon />}
+							aria-controls="Create New Product"
+						>
+							<Typography variant="h5">Create Product</Typography>
+						</AccordionSummary>
+							<CreateProductForm categories={categories}/>
+							
+						</Accordion>
 					</Grid>
 
 					<Grid item xs={12} md={6} lg={4}>
+						<Accordion defaultExpanded>
+							<AccordionSummary
+								expandIcon={<ExpandMoreIcon />}
+								aria-controls="panel1a-content"
+								id="panel1a-header"
+							>
+								<Typography variant="h5">Create Product</Typography>
+							</AccordionSummary>
+								<CreateProductForm categories={categories}/>	
+						</Accordion>
 					</Grid>
 
 					<Grid item xs={12} md={12} lg={4}>
+						<Accordion defaultExpanded>
+							<AccordionSummary
+								expandIcon={<ExpandMoreIcon />}
+								aria-controls="panel1a-content"
+								id="panel1a-header"
+							>
+								<Typography variant="h5">Create Product</Typography>
+							</AccordionSummary>
+								<CreateProductForm categories={categories}/>	
+						</Accordion>
 					</Grid>
 
 					<Grid item xs={12}/>

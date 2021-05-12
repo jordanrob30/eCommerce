@@ -98,11 +98,9 @@ const CreateProductForm = ({categories}) => {
 
 	return (
 		<Paper component='form' onSubmit={handleSubmit} className={classes.Paper}>
-			<Typography variant="h3" align="center" gutterBottom>Product Creation</Typography>
-			<Divider/>
 			<Grid container>
 				<Grid item xs={12}>
-					<TextField type="text" name="name" label="Name" value={values.name} onChange={handleChange} required fullWidth/>
+					<TextField autoFocus type="text" name="name" label="Name" value={values.name} onChange={handleChange} required fullWidth/>
 					<TextField type="text" name="description" label="Description" value={values.description} onChange={handleChange} required fullWidth/>
 					<div/>
 					<TextField 
