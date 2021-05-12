@@ -37,7 +37,7 @@ const Product = ({product}) => {
                             {product.name}
                         </Typography>
                         <Typography variant="h5" component="h2" >
-                            £{(product.sellPrice).toFixed(2)}
+                            £{parseFloat(product.sellPrice).toFixed(2)}
                         </Typography>
                     </div>
                     <Typography gutterBottom dangerouslySetInnerHTML={{ __html: product.description }} variant="body2" color="textSecondary" component="p" />

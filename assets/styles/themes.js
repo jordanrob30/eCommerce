@@ -11,6 +11,7 @@ const themes = {
                 '@global': {
                     '*': {
                         'scrollbar-width': 'none',
+                        '-moz-appearance': 'textfield'
                     },
                     '*::-webkit-scrollbar': {
                         width: '4px',
@@ -30,6 +31,7 @@ const themes = {
                 '@global': {
                     '*': {
                         'scrollbar-width': 'none',
+                        '-moz-appearance': 'textfield'
                     },
                     '*::-webkit-scrollbar': {
                         width: '4px',
