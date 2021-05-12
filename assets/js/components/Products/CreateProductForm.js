@@ -134,7 +134,7 @@ const CreateProductForm = ({categories}) => {
 						className={classes.autocomplete}
 						renderInput={(params) => <TextField {...params} label="Categories" variant="standard" required fullWidth/>}
 					/>					
-					<ChipInput name="tags" label="Tags" value={values.tags} onChange={(tags) => setValues({...values, tags: tags})} fullWidth/>	
+					<ChipInput name="tags" label="Tags" onChange={(tags) => setValues({...values, tags: tags})} fullWidth/>	
 					<TextField type="number" name="stock" label="Stock" value={values.stock} onChange={handleChange} required fullWidth/>
 					<TextField type="text" name="imageSource" label="Image Source" value={values.imageSource} onChange={handleChange} required fullWidth/>
 				</Grid>
