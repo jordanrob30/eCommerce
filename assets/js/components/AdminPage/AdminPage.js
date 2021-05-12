@@ -5,15 +5,20 @@ import axios from 'axios'
 
 import { AdminTaskBar } from '..'
 import { CreateProductForm } from '..'
+import ProductsDisplay from '../Products/ProductsDisplay';
 
 const AdminPage = () => {
 	const [categories, setCategories] = useState([])
+	const [products, setProducts] = useState([])
 
 	useEffect(() => {
-		axios.get('/api/category/read/all/')
+        axios.get('/api/products/read/all/')
+            .then(res => setProducts(res.data))
+            .catch(err => console.error(err));
+        axios.get('/api/category/read/all/')
             .then(res => setCategories(res.data))
-            .catch(err => console.error(err)); 
-	}, [])
+            .catch(err => console.error(err));  
+    }, [])
 
 	return (
 		<>
@@ -42,9 +47,9 @@ const AdminPage = () => {
 								aria-controls="panel1a-content"
 								id="panel1a-header"
 							>
-								<Typography variant="h5">Create Product</Typography>
+								<Typography variant="h5">All Products</Typography>
 							</AccordionSummary>
-								<CreateProductForm categories={categories}/>	
+								<ProductsDisplay products={products} size={0}/>
 						</Accordion>
 					</Grid>
 
