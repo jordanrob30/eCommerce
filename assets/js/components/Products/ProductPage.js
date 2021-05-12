@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {Container, Divider, Grid, Typography} from '@material-ui/core';
-import axios from 'axios'
 
 import Product from './Product';
 
