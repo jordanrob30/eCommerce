@@ -83,7 +83,7 @@ const CreateProductForm = ({categories}) => {
 			category: '',
 			tags: [],
 			stock: '',
-			imageSource: 'https://knowpathology.com.au/app/uploads/2018/07/Happy-Test-Screen-01.png'
+			imageSource: ''
 		});
 	};
 
@@ -130,11 +130,11 @@ const CreateProductForm = ({categories}) => {
 					/>
 					<Autocomplete
 						name="category"
+						onChange={(e, data) => setValues({...values, category: data.name})}
 						options={categories}
 						getOptionLabel={(category) => category.name}
 						className={classes.autocomplete}
 						renderInput={(params) => <TextField {...params} label="Categories" variant="standard" required fullWidth/>}
-						onChange={handleChange}
 					/>					
 					<ChipInput name="tags" label="Tags" value={values.tags} onChange={(tags) => setValues({...values, tags: tags})} fullWidth/>	
 					<TextField type="number" name="stock" label="Stock" value={values.stock} onChange={handleChange} required fullWidth/>
