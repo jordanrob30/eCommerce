@@ -23,7 +23,7 @@ const TaskBar = ({ login, toggleTheme, categories, changeCategories}) => {
 
     return (
       	<>
-		  	<MenuDrawer open={openMenu} setOpen={setOpenMenu} theme={theme} toggleTheme={toggleTheme} login={login} categories={categories} changeCategories={changeCategories}/>
+		  	<MenuDrawer open={openMenu} setOpen={setOpenMenu} toggleTheme={toggleTheme} login={login} categories={categories} changeCategories={changeCategories}/>
         	<AppBar position="fixed">
 				<Toolbar>
 					<IconButton onClick={() => setOpenMenu(true)} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">

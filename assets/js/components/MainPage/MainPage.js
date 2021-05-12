@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { ProductPage, TaskBar, LoginDialog} from '../'
 import axios from 'axios';
-import { useTheme } from '@material-ui/core';
-import { Route, Router, Switch } from 'react-router';
 
-const MainPage = (toggleTheme) => {
+
+const MainPage = ({toggleTheme}) => {
     const [products, setProducts] = useState([])
     const [user, setUser] = useState(null);
     const [categories, setCategories] = useState([])
