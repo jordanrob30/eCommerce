@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 
 import { AdminTaskBar } from '..'
-import CreateProductForm from './CreateProductForm'
+import { CreateProductForm } from '..'
 
 const AdminPage = () => {
 	const [categories, setCategories] = useState([])
