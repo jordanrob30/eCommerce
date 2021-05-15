@@ -17,6 +17,12 @@ import React, { useEffect, useState } from "react";
 import { Product } from "..";
 import axios from "axios";
 
+/**
+ * @param  {props} props props of text field
+ * @return {NumberFormat}
+ *
+ * used to create custom text field format using react-number-format
+ */
 function NumberFormatCustom(props) {
 	const { inputRef, onChange, ...other } = props;
 
@@ -60,21 +66,34 @@ const useStyles = makeStyles(() => ({
 	},
 }));
 
+const initialState = {
+	name: "",
+	description: "",
+	buyPrice: "",
+	sellPrice: "",
+	category: "",
+	tags: [],
+	stock: "",
+	imageSource: "",
+};
+
+/**
+ * @prop  {string[]} {categories} array of category names
+ *
+ * product creation form component
+ */
 const CreateProductForm = ({ categories }) => {
 	const theme = useTheme();
 	const classes = useStyles(theme);
 
-	const [values, setValues] = useState({
-		name: "",
-		desription: "",
-		buyPrice: "",
-		sellPrice: "",
-		category: "",
-		tags: [],
-		stock: "",
-		imageSource: "",
-	});
+	const [values, setValues] = useState(initialState);
+	const [error, setError] = useState(false);
 
+	/**
+	 * @param  {event} event onChange event
+	 *
+	 * updates values state on change of input
+	 */
 	const handleChange = (event) => {
 		setValues({
 			...values,
@@ -82,23 +101,26 @@ const CreateProductForm = ({ categories }) => {
 		});
 	};
 
+	/**
+	 * resets values state to initial state
+	 */
 	const handleClear = () => {
-		setValues({
-			name: "",
-			description: "",
-			buyPrice: "",
-			sellPrice: "",
-			category: "",
-			tags: [],
-			stock: "",
-			imageSource: "",
-		});
+		setValues(initialState);
 	};
 
+	/**
+	 * @param  {event} event on Submit event
+	 *
+	 * posts the current form values to product creation api
+	 * then clears the form inputs
+	 * if error caught then updates error state
+	 */
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		axios.post("/api/products/create", values).then().catch();
-		handleClear();
+		axios.post("/api/products/create", values).catch((err) => {
+			setError(true);
+			handleClear();
+		});
 	};
 
 	return (
@@ -195,6 +217,15 @@ const CreateProductForm = ({ categories }) => {
 					<Product product={values} />
 				</Grid>
 				<Grid container justify="flex-end" className={classes.autocomplete}>
+					{error && (
+						<Typography
+							variant="subtitle1"
+							color="error"
+							className={classes.buttons}
+						>
+							Something Went Wrong
+						</Typography>
+					)}
 					<Button
 						onClick={handleClear}
 						variant="contained"
