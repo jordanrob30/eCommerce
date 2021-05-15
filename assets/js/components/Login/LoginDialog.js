@@ -10,28 +10,39 @@ import {
 	DialogTitle,
 } from "@material-ui/core";
 
+/**
+ * creates sliding transition to be used by the dialog box
+ */
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const LoginDialog = ({ login }) => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [credentials, setCredentials] = useState({ email: "", password: "" });
 	const [error, setError] = useState(false);
 
+	/**
+	 * @param  {} event onSubmit event
+	 *
+	 * authenticates the credentials of current user
+	 * on submit of login form
+	 */
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		login.setUser({ email: email, password: password })
-			? login.setDialog(false)
-			: setError(true);
+		login.setUser(credentials) ? login.setDialog(false) : setError(true);
 	};
 
-	const handleEmailChange = (event) => {
-		setEmail(event.target.value);
-	};
-
-	const handlePasswordChange = (event) => {
-		setPassword(event.target.value);
+	/**
+	 * @param  {} event onChange event
+	 *
+	 * sets state of credentials based on the value
+	 * of the email and password text fields on
+	 * change of value event
+	 */
+	const handleChange = (event) => {
+		const key = event.target.id;
+		const data = event.target.value;
+		setCredentials({ ...credentials, [key]: data });
 	};
 
 	return (
@@ -50,7 +61,7 @@ const LoginDialog = ({ login }) => {
 						id="email"
 						label="Email Address"
 						type="email"
-						onChange={handleEmailChange}
+						onChange={handleChange}
 						fullWidth
 						required
 					/>
@@ -59,7 +70,7 @@ const LoginDialog = ({ login }) => {
 						id="password"
 						label="Password"
 						type="password"
-						onChange={handlePasswordChange}
+						onChange={handleChange}
 						fullWidth
 						required
 					/>
