@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+/**
+ * @prop  {string[]} {tags} array of tag names
+ */
 const Chips = ({ tags }) => {
 	const classes = useStyles();
 

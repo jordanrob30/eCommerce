@@ -30,7 +30,11 @@ const useStyles = makeStyles({
 		justifyContent: "space-between",
 	},
 });
-
+/**
+ * @param  {object} {product} product object
+ *
+ * product card component
+ */
 const Product = ({ product }) => {
 	const classes = useStyles();
 

@@ -9,6 +9,10 @@ const useStyles = makeStyles(() => ({
 	},
 }));
 
+/**
+ * @param  {object[]} products array of product objects
+ * @param  {int=} size optional size value for sizing grid
+ */
 const ProductsDisplay = ({ products, size = 1 }) => {
 	const classes = useStyles();
 

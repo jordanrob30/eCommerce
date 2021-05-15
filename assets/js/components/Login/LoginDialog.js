@@ -17,12 +17,15 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
+/**
+ * @prop {{user: object, setUser: function, dialog: boolean, setDialog: function}} {login}
+ */
 const LoginDialog = ({ login }) => {
 	const [credentials, setCredentials] = useState({ email: "", password: "" });
 	const [error, setError] = useState(false);
 
 	/**
-	 * @param  {} event onSubmit event
+	 * @param  {event} event onSubmit event
 	 *
 	 * authenticates the credentials of current user
 	 * on submit of login form
@@ -33,7 +36,7 @@ const LoginDialog = ({ login }) => {
 	};
 
 	/**
-	 * @param  {} event onChange event
+	 * @param  {event} event onChange event
 	 *
 	 * sets state of credentials based on the value
 	 * of the email and password text fields on

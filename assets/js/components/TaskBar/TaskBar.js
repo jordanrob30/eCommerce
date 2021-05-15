@@ -24,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+/**
+ * @param  {object} login
+ * @param  {function} toggleTheme
+ * @param  {string[]} categories
+ * @param  {function} changeCategories
+ */
 const TaskBar = ({ login, toggleTheme, categories, changeCategories }) => {
 	const theme = useTheme();
 	const [openMenu, setOpenMenu] = useState(false);

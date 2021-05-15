@@ -14,7 +14,10 @@ import themes from "../styles/themes";
 const App = () => {
 	const [theme, setTheme] = useState(themes.dark);
 
-	const toggleTheme = () => {
+	/**
+	 * Changes theme state based on current theme
+	 */
+	function toggleTheme() {
 		switch (theme.palette.type) {
 			case "dark":
 				setTheme(themes.light);
@@ -25,7 +28,7 @@ const App = () => {
 			default:
 				break;
 		}
-	};
+	}
 
 	return (
 		<ThemeProvider theme={theme}>

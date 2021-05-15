@@ -1,9 +1,12 @@
 import React from "react";
 import { Container, Divider, Grid, Typography } from "@material-ui/core";
 
-import Product from "./Product";
 import ProductsDisplay from "./ProductsDisplay";
 
+/**
+ * @prop  {object[]} {products} array of product objects
+ * @prop  {string} {title} title of product page based on category name
+ */
 const ProductPage = ({ products, title }) => {
 	return (
 		<Container>

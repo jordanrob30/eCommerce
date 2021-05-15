@@ -13,6 +13,9 @@ const useStyles = makeStyles(() => ({
 	},
 }));
 
+/**
+ * Task bar component for admin page
+ */
 const AdminTaskBar = () => {
 	const classes = useStyles();
 

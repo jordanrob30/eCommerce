@@ -33,6 +33,14 @@ const useStyles = makeStyles({
 	},
 });
 
+/**
+ * @param  {boolean} open
+ * @param  {function} setOpen
+ * @param  {function} toggleTheme
+ * @param  {object} login
+ * @param  {string[]} categories
+ * @param  {function} changeCategories
+ */
 const MenuDrawer = ({
 	open,
 	setOpen,

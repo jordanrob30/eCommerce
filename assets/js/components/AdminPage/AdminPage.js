@@ -14,10 +14,18 @@ import { AdminTaskBar } from "..";
 import { CreateProductForm } from "..";
 import ProductsDisplay from "../Products/ProductsDisplay";
 
+/**
+ * Admin Page component
+ */
 const AdminPage = () => {
 	const [categories, setCategories] = useState([]);
 	const [products, setProducts] = useState([]);
 
+	/**
+	 * on instantiation of the component current product and category
+	 * arrays are fetched from database and corresponding states are
+	 * updated
+	 */
 	useEffect(() => {
 		axios
 			.get("/api/products/read/all/")

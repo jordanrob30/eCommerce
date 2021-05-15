@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { ProductPage, TaskBar, LoginDialog } from "../";
 import axios from "axios";
 
+/**
+ * @prop  {function} {toggleTheme} toggle theme function
+ */
 const MainPage = ({ toggleTheme }) => {
 	const [products, setProducts] = useState([]);
 	const [user, setUser] = useState(null);
@@ -9,6 +12,11 @@ const MainPage = ({ toggleTheme }) => {
 	const [title, setTitle] = useState("All Products");
 	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
+	/**
+	 * on instantiation of the component current product and category
+	 * arrays are fetched from database and corresponding states are
+	 * updated
+	 */
 	useEffect(() => {
 		axios
 			.get("/api/products/read/all/")
@@ -20,6 +28,10 @@ const MainPage = ({ toggleTheme }) => {
 			.catch((err) => console.error(err));
 	}, []);
 
+	/**
+	 * @param  {{email: string, password: string}} _user user credential object
+	 * @return {boolean} authentication success
+	 */
 	const loginUser = async (_user) => {
 		await axios
 			.put("/api/users/auth/init", _user)
@@ -38,6 +50,9 @@ const MainPage = ({ toggleTheme }) => {
 		setDialog: setLoginDialogOpen,
 	};
 
+	/**
+	 * @param  {string} category="*" name of category to update products to, if default updates products to all products
+	 */
 	const changeCategories = (category = "*") => {
 		if (category === "*") {
 			axios
