@@ -1,17 +1,17 @@
-import { AppBar, Toolbar, Button, IconButton, Typography, makeStyles } from '@material-ui/core';
-import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, makeStyles } from "@material-ui/core";
+import React from "react";
 
 const useStyles = makeStyles(() => ({
-		root: {
-			flexGrow: 1,
-		},
-		menuButton: {
-			marginRight: "8px",
-		},
-		title: {
-			flexGrow: 1,
-		},
-	}));
+	root: {
+		flexGrow: 1,
+	},
+	menuButton: {
+		marginRight: "8px",
+	},
+	title: {
+		flexGrow: 1,
+	},
+}));
 
 const AdminTaskBar = () => {
 	const classes = useStyles();
@@ -25,9 +25,9 @@ const AdminTaskBar = () => {
 					</Typography>
 				</Toolbar>
 			</AppBar>
-			<Toolbar/>
+			<Toolbar />
 		</>
-		)
-}
+	);
+};
 
-export default AdminTaskBar
+export default AdminTaskBar;
