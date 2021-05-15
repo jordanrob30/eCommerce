@@ -30,14 +30,14 @@ const Product = ({product}) => {
     return (
         <>
             <Card className={classes.root}>
-                <CardMedia className={classes.media} image={product.imageSource} title={product.name} />
+                <CardMedia className={classes.media} image={(product.imageSource === '' ? 'https://www.kaindl.com/fileadmin/_processed_/d/8/csm_2162_PE_Dekorbild_0ec3e17e00.jpg' : product.imageSource)} title={product.name} />
                 <CardContent>
                     <div className={classes.cardContent}>
                         <Typography variant="h5" component="h2">
                             {product.name}
                         </Typography>
                         <Typography variant="h5" component="h2" >
-                            £{(product.sellPrice).toFixed(2)}
+                            £{parseFloat(product.sellPrice).toFixed(2)}
                         </Typography>
                     </div>
                     <Typography gutterBottom dangerouslySetInnerHTML={{ __html: product.description }} variant="body2" color="textSecondary" component="p" />
