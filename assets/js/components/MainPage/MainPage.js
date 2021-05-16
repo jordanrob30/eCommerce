@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ProductPage, TaskBar, LoginDialog } from "../";
+import { ProductPage, TaskBar, LoginDialog, RegisterDialog } from "../";
 import axios from "axios";
 
 /**
@@ -10,7 +10,8 @@ const MainPage = ({ toggleTheme }) => {
 	const [user, setUser] = useState(null);
 	const [categories, setCategories] = useState([]);
 	const [title, setTitle] = useState("All Products");
-	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+	const [loginDialog, setLoginDialog] = useState(false);
+	const [registerDialog, setRegisterDialog] = useState(true);
 
 	/**
 	 * on instantiation of the component current product and category
@@ -46,8 +47,10 @@ const MainPage = ({ toggleTheme }) => {
 	const login = {
 		user: user,
 		setUser: loginUser,
-		dialog: loginDialogOpen,
-		setDialog: setLoginDialogOpen,
+		dialog: loginDialog,
+		setDialog: setLoginDialog,
+		register: registerDialog,
+		setRegister: setRegisterDialog,
 	};
 
 	/**
@@ -72,6 +75,7 @@ const MainPage = ({ toggleTheme }) => {
 	return (
 		<>
 			<LoginDialog login={login} />
+			<RegisterDialog login={login} />
 			<TaskBar
 				login={login}
 				toggleTheme={toggleTheme}

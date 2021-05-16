@@ -8,6 +8,7 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
+	Typography,
 } from "@material-ui/core";
 
 /**
@@ -24,6 +25,8 @@ const LoginDialog = ({ login }) => {
 	const [credentials, setCredentials] = useState({ email: "", password: "" });
 	const [error, setError] = useState(false);
 
+	const handleClose = () => login.setDialog(false);
+
 	/**
 	 * @param  {event} event onSubmit event
 	 *
@@ -32,7 +35,7 @@ const LoginDialog = ({ login }) => {
 	 */
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		login.setUser(credentials) ? login.setDialog(false) : setError(true);
+		login.setUser(credentials) ? handleClose() : setError(true);
 	};
 
 	/**
@@ -51,12 +54,12 @@ const LoginDialog = ({ login }) => {
 	return (
 		<Dialog
 			open={login.dialog}
-			onClose={() => login.setDialog(false)}
-			aria-labelledby="form-dialog-title"
+			onClose={handleClose}
+			aria-labelledby="Login form dialog"
 			TransitionComponent={Transition}
 		>
 			<form onSubmit={handleSubmit}>
-				<DialogTitle id="form-dialog-title">Login</DialogTitle>
+				<DialogTitle id="login form">Login</DialogTitle>
 				<DialogContent>
 					<TextField
 						autoFocus
@@ -80,7 +83,10 @@ const LoginDialog = ({ login }) => {
 					<DialogContentText>{error && "Login Failed"}</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={() => login.setDialog(false)} color="secondary">
+					<Button onClick={() => login.setRegister(true)} variant="text">
+						register
+					</Button>
+					<Button onClick={handleClose} color="secondary">
 						Cancel
 					</Button>
 					<Button type="submit" color="primary">
