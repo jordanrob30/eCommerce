@@ -6,16 +6,18 @@ import {
 	Typography,
 	IconButton,
 	makeStyles,
+	useTheme,
 } from "@material-ui/core";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 import React from "react";
 import Chips from "./Chips";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		// maxWidth: 345, original width style
 		maxWidth: "100%",
+		backgroundColor: theme.palette.primary.main,
 	},
 	media: {
 		height: 0,
@@ -29,14 +31,15 @@ const useStyles = makeStyles({
 		display: "flex",
 		justifyContent: "space-between",
 	},
-});
+}));
 /**
  * @param  {object} {product} product object
  *
  * product card component
  */
 const Product = ({ product }) => {
-	const classes = useStyles();
+	const theme = useTheme();
+	const classes = useStyles(theme);
 
 	return (
 		<>
