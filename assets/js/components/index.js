@@ -10,3 +10,4 @@ export { default as RegisterDialog } from "./Login/RegisterDialog";
 export { default as MainPage } from "./MainPage/MainPage";
 export { default as User } from "./Users/User";
 export { default as EditDialog } from "./Users/EditDialog";
+export { default as DeleteDialog } from "./Users/DeleteDialog";

@@ -10,7 +10,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import { AdminTaskBar, EditDialog, User } from "..";
+import { AdminTaskBar, EditDialog, DeleteDialog } from "..";
 import { CreateProductForm } from "..";
 import ProductsDisplay from "../Products/ProductsDisplay";
 import UserDisplay from "../Users/UserDisplay";
@@ -23,7 +23,9 @@ const AdminPage = () => {
 	const [products, setProducts] = useState([]);
 	const [userList, setUserList] = useState([]);
 	const [editDialog, setEditDialog] = useState(false);
+	const [deleteDialog, setDeleteDialog] = useState(false);
 	const [values, setValues] = useState({});
+	const [id, setId] = useState(null);
 
 	/**
 	 * on instantiation of the component current product and category
@@ -46,10 +48,8 @@ const AdminPage = () => {
 	}, []);
 
 	const deleteUser = (id) => {
-		axios
-			.delete("/api/users/delete/" + id)
-			.then((res) => setUserList(res.data))
-			.catch((err) => console.error(err));
+		setId(id);
+		setDeleteDialog(true);
 	};
 
 	const editUser = async (id) => {
@@ -68,62 +68,58 @@ const AdminPage = () => {
 		edit: editUser,
 	};
 
+	const tabs = [
+		{
+			title: "All Products",
+			contents: <ProductsDisplay products={products} size={0} />,
+		},
+		{
+			title: "Create New Product",
+			contents: <CreateProductForm categories={categories} />,
+		},
+		{
+			title: "All Users",
+			contents: <UserDisplay users={users} />,
+		},
+	];
+
 	return (
 		<>
-			{editDialog && (
-				<EditDialog
-					open={editDialog}
-					close={setEditDialog}
-					values={values}
-					setValues={setValues}
-					setUserList={setUserList}
-				/>
-			)}
 			<AdminTaskBar />
 			<Container maxWidth={false}>
 				<Grid container justify="center" spacing={2}>
 					<Grid item xs={12} />
 
-					<Grid item xs={12} md={6} lg={4}>
-						<Accordion defaultExpanded>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls="Show All Product"
-							>
-								<Typography variant="h5">All Products</Typography>
-							</AccordionSummary>
-							<ProductsDisplay products={products} size={0} />
-						</Accordion>
-					</Grid>
-
-					<Grid item xs={12} md={6} lg={4}>
-						<Accordion defaultExpanded>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls="Create New Product"
-							>
-								<Typography variant="h5">Create Product</Typography>
-							</AccordionSummary>
-							<CreateProductForm categories={categories} />
-						</Accordion>
-					</Grid>
-
-					<Grid item xs={12} md={12} lg={4}>
-						<Accordion defaultExpanded>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls="Show All Users"
-							>
-								<Typography variant="h5">Users</Typography>
-							</AccordionSummary>
-							<UserDisplay users={users} />
-						</Accordion>
-					</Grid>
+					{tabs.map((tab, index) => (
+						<Grid item xs={12} md={6} lg={4} key={tab.title}>
+							<Accordion>
+								<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+									<Typography variant="h5">{tab.title}</Typography>
+								</AccordionSummary>
+								{tab.contents}
+							</Accordion>
+						</Grid>
+					))}
 
 					<Grid item xs={12} />
 				</Grid>
 				<Divider variant="middle" />
 			</Container>
+
+			<EditDialog
+				open={editDialog}
+				close={setEditDialog}
+				values={values}
+				setValues={setValues}
+				setUserList={setUserList}
+			/>
+
+			<DeleteDialog
+				open={deleteDialog}
+				close={() => setDeleteDialog(false)}
+				id={id}
+				setUserList={setUserList}
+			/>
 		</>
 	);
 };
