@@ -102,15 +102,15 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/update/{field}/{id}", name="api_users_update", methods={"PUT"})
+     * @Route("/update/{field}/{id}", name="api_users_field_update", methods={"PUT"})
      *
      */
-    public function updateUser($feild, $id, Request $request): JsonResponse
+    public function updateUserField($field, $id, Request $request): JsonResponse
     {
         $user = $this->userRepository->findOneBy(['id' => $id]);
         $data = json_decode($request->getContent(), true)['data'];
 
-        switch ($feild) {
+        switch ($field) {
             case 'firstname':
                 $user->setFirstname($data);
                 break;
@@ -122,6 +122,29 @@ class UserController extends AbstractController
         }
 
         $user->setModifiedtime(new \DateTime());
+        return $this->readUsers();
+    }
+
+
+    /**
+     * @Route("/update/{id}", name="api_users_update", methods={"PUT"})
+     */
+    public function updateUser($id, Request $request): JsonResponse
+    {
+        $user = $this->userRepository->findOneBy(['id' => $id]);
+        $data = json_decode($request->getContent(), true)['data'];
+
+        try {
+            $user->setFirstname($data['firstname']);
+            $user->setLastname($data['lastname']);
+        } catch (\Throwable $th) {
+            return new JsonResponse([
+                'error' => true,
+                'errorType' => 'SeverError',
+                'errorMsg' => 'Issue on Server end'
+            ]);
+        }
+
         return $this->readUsers();
     }
 
