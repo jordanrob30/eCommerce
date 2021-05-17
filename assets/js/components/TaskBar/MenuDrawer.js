@@ -19,7 +19,7 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
 	list: {
 		width: 250,
 	},
@@ -29,9 +29,9 @@ const useStyles = makeStyles({
 	div: {
 		display: "flex",
 		justifyContent: "flex-end",
-		height: 64,
+		height: theme.mixins.toolbar,
 	},
-});
+}));
 
 /**
  * @param  {boolean} open
@@ -49,8 +49,9 @@ const MenuDrawer = ({
 	categories,
 	changeCategories,
 }) => {
-	const classes = useStyles();
 	const theme = useTheme();
+	const classes = useStyles(theme);
+
 	const themeIcon =
 		theme.palette.type === "dark" ? (
 			<Brightness2Rounded />
@@ -81,7 +82,7 @@ const MenuDrawer = ({
 			open={open}
 			onClose={() => setOpen(false)}
 			onOpen={() => setOpen(true)}
-			swipeAreaWidth={40}
+			swipeAreaWidth={20}
 		>
 			<div className={classes.div}>
 				<IconButton onClick={() => setOpen(false)}>
