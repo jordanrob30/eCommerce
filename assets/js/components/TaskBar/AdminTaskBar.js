@@ -1,5 +1,13 @@
-import { AppBar, Toolbar, Typography, makeStyles } from "@material-ui/core";
+import {
+	AppBar,
+	Toolbar,
+	Typography,
+	makeStyles,
+	IconButton,
+} from "@material-ui/core";
+import { Home } from "@material-ui/icons";
 import React from "react";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
 	root: {
@@ -23,6 +31,14 @@ const AdminTaskBar = () => {
 		<>
 			<AppBar position="fixed">
 				<Toolbar>
+					<IconButton
+						edge="start"
+						component={Link}
+						to={"/"}
+						className={classes.menuButton}
+					>
+						<Home />
+					</IconButton>
 					<Typography variant="h6" className={classes.title}>
 						Ecommerce Admin
 					</Typography>
