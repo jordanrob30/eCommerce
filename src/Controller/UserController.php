@@ -128,8 +128,11 @@ class UserController extends AbstractController
     /**
      * @Route("/delete/{id}", name="api_users_delete", methods={"DELETE"})
      */
-    public function deleteUser(): JsonResponse
+    public function deleteUser($id): JsonResponse
     {
+        $user = $this->userRepository->findOneBy(['id' => $id]);
+        $this->userRepository->deleteUser($user);
+
         return $this->readUsers();
     }
 
