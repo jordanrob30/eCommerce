@@ -88,6 +88,18 @@ const AdminPage = () => {
 						<Accordion defaultExpanded>
 							<AccordionSummary
 								expandIcon={<ExpandMoreIcon />}
+								aria-controls="Show All Product"
+							>
+								<Typography variant="h5">All Products</Typography>
+							</AccordionSummary>
+							<ProductsDisplay products={products} size={0} />
+						</Accordion>
+					</Grid>
+
+					<Grid item xs={12} md={6} lg={4}>
+						<Accordion defaultExpanded>
+							<AccordionSummary
+								expandIcon={<ExpandMoreIcon />}
 								aria-controls="Create New Product"
 							>
 								<Typography variant="h5">Create Product</Typography>
@@ -96,25 +108,11 @@ const AdminPage = () => {
 						</Accordion>
 					</Grid>
 
-					<Grid item xs={12} md={6} lg={4}>
-						<Accordion defaultExpanded>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls="panel1a-content"
-								id="panel1a-header"
-							>
-								<Typography variant="h5">All Products</Typography>
-							</AccordionSummary>
-							<ProductsDisplay products={products} size={0} />
-						</Accordion>
-					</Grid>
-
 					<Grid item xs={12} md={12} lg={4}>
 						<Accordion defaultExpanded>
 							<AccordionSummary
 								expandIcon={<ExpandMoreIcon />}
-								aria-controls="panel1a-content"
-								id="panel1a-header"
+								aria-controls="Show All Users"
 							>
 								<Typography variant="h5">Users</Typography>
 							</AccordionSummary>
