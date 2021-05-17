@@ -122,6 +122,7 @@ class UserController extends AbstractController
         }
 
         $user->setModifiedtime(new \DateTime());
+        $this->userRepository->updateUser($user);
         return $this->readUsers();
     }
 
@@ -132,11 +133,13 @@ class UserController extends AbstractController
     public function updateUser($id, Request $request): JsonResponse
     {
         $user = $this->userRepository->findOneBy(['id' => $id]);
-        $data = json_decode($request->getContent(), true)['data'];
+        $data = json_decode($request->getContent(), true);
 
         try {
             $user->setFirstname($data['firstname']);
             $user->setLastname($data['lastname']);
+            $user->setModifiedtime(new \DateTime());
+            $this->userRepository->updateUser($user);
         } catch (\Throwable $th) {
             return new JsonResponse([
                 'error' => true,

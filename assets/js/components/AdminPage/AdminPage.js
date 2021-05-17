@@ -10,9 +10,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import { AdminTaskBar } from "..";
+import { AdminTaskBar, EditDialog, User } from "..";
 import { CreateProductForm } from "..";
 import ProductsDisplay from "../Products/ProductsDisplay";
+import UserDisplay from "../Users/UserDisplay";
 
 /**
  * Admin Page component
@@ -20,6 +21,9 @@ import ProductsDisplay from "../Products/ProductsDisplay";
 const AdminPage = () => {
 	const [categories, setCategories] = useState([]);
 	const [products, setProducts] = useState([]);
+	const [userList, setUserList] = useState([]);
+	const [editDialog, setEditDialog] = useState(false);
+	const [values, setValues] = useState({});
 
 	/**
 	 * on instantiation of the component current product and category
@@ -35,10 +39,46 @@ const AdminPage = () => {
 			.get("/api/category/read/all/")
 			.then((res) => setCategories(res.data))
 			.catch((err) => console.error(err));
+		axios
+			.get("/api/users/read/all/")
+			.then((res) => setUserList(res.data))
+			.catch((err) => console.log(err));
 	}, []);
+
+	const deleteUser = (id) => {
+		axios
+			.delete("/api/users/delete/" + id)
+			.then((res) => setUserList(res.data))
+			.catch((err) => console.error(err));
+	};
+
+	const editUser = async (id) => {
+		const res = await axios.get("/api/users/read/all/id/" + id);
+		if (res.data.error) {
+			console.error(res.data);
+		} else {
+			setValues(res.data[0]);
+			setEditDialog(true);
+		}
+	};
+
+	const users = {
+		users: userList,
+		del: deleteUser,
+		edit: editUser,
+	};
 
 	return (
 		<>
+			{editDialog && (
+				<EditDialog
+					open={editDialog}
+					close={setEditDialog}
+					values={values}
+					setValues={setValues}
+					setUserList={setUserList}
+				/>
+			)}
 			<AdminTaskBar />
 			<Container maxWidth={false}>
 				<Grid container justify="center" spacing={2}>
@@ -76,9 +116,9 @@ const AdminPage = () => {
 								aria-controls="panel1a-content"
 								id="panel1a-header"
 							>
-								<Typography variant="h5">Create Product</Typography>
+								<Typography variant="h5">Users</Typography>
 							</AccordionSummary>
-							<CreateProductForm categories={categories} />
+							<UserDisplay users={users} />
 						</Accordion>
 					</Grid>
 
