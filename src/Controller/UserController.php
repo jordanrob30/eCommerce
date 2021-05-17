@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\UserRepository;
 use App\Entity\User;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,23 +31,35 @@ class UserController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        try {
-            $user = new User;
-            $user
-                ->setEmail($data['email'])
-                ->setRoles($data['roles'])
-                ->setPassword($data['password'])
-                ->setFirstname($data['firstname'])
-                ->setLastname($data['lastname'])
-                ->setExternalStripeId('')
-                ->setCreatedtime(new \DateTime())
-                ->setModifiedtime(new \DateTime());;
-            
-            $this->userRepository->saveUser($user);
-            return $this->readUsers();
-        }catch(\Throwable $th){
-            return new JsonResponse($th);
+        if ($this->validateUniqueUser($data['email']) === false) {
+            try {
+                $user = new User;
+                $user
+                    ->setEmail($data['email'])
+                    ->setRoles($data['roles'])
+                    ->setPassword($data['password'])
+                    ->setFirstname($data['firstname'])
+                    ->setLastname($data['lastname'])
+                    ->setExternalStripeId('')
+                    ->setCreatedtime(new \DateTime())
+                    ->setModifiedtime(new \DateTime());;
+
+                $this->userRepository->saveUser($user);
+                return $this->readUsers();
+            } catch (\Throwable $th) {
+                return new JsonResponse([
+                    'error' => true,
+                    'errorType' => 'SeverError',
+                    'errorMsg' => 'Issue on Server end'
+                ]);
+            }
         }
+
+        return new JsonResponse([
+            'error' => true,
+            'errorType' => 'nonUniqueEmail',
+            'errorMsg' => 'Email is already in use'
+        ]);
     }
 
     /**
@@ -57,7 +70,7 @@ class UserController extends AbstractController
         $users = $this->userRepository->findAll();
         $data  = [];
 
-        foreach($users as $user){
+        foreach ($users as $user) {
             $data[] = [
                 'id' => $user->getId(),
                 'email' => $user->getEmail(),
@@ -127,15 +140,14 @@ class UserController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         $user = $this->userRepository->findOneBy(['email' => $data['email']]);
-        try{
-            if($user->getPassword() === $data['password'])
-            {
+        try {
+            if ($user->getPassword() === $data['password']) {
                 return new JsonResponse(['auth_token' => 'successful']);
-            }else{
+            } else {
                 throw new \Throwable("Authentication failed");
             }
-        }catch(\Throwable $th) {
-            return new JsonResponse($th);
+        } catch (\Throwable $th) {
+            return new JsonResponse($$th->getMessage());
         }
     }
 
@@ -145,17 +157,26 @@ class UserController extends AbstractController
     public function authUser(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        try{
-            if($data['auth_token'] === "successful")
-            {
+        try {
+            if ($data['auth_token'] === "successful") {
                 return new JsonResponse(true);
-            }else{
+            } else {
                 return new JsonResponse(false);
             }
-        }catch(\Throwable $th) {
+        } catch (\Throwable $th) {
             return new JsonResponse($th->getMessage());
         }
     }
 
 
+
+    private function validateUniqueUser(String $email): Boolean
+    {
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+        if ($user) {
+            return new Boolean(false);
+        }
+
+        return new Boolean(true);
+    }
 }

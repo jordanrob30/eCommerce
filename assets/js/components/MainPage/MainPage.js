@@ -11,7 +11,7 @@ const MainPage = ({ toggleTheme }) => {
 	const [categories, setCategories] = useState([]);
 	const [title, setTitle] = useState("All Products");
 	const [loginDialog, setLoginDialog] = useState(false);
-	const [registerDialog, setRegisterDialog] = useState(true);
+	const [registerDialog, setRegisterDialog] = useState(false);
 
 	/**
 	 * on instantiation of the component current product and category

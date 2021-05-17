@@ -7,6 +7,7 @@ import {
 	DialogTitle,
 	Slide,
 	TextField,
+	Typography,
 } from "@material-ui/core";
 import axios from "axios";
 
@@ -14,7 +15,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const initialState = {
+const initialValues = {
 	firstname: "",
 	lastname: "",
 	email: "",
@@ -22,15 +23,32 @@ const initialState = {
 	roles: [],
 };
 
+const initialErrors = {
+	error: false,
+	errorType: "",
+	errorMsg: "",
+};
+
 const RegisterDialog = ({ login }) => {
-	const [values, setValues] = useState(initialState);
+	const [values, setValues] = useState(initialValues);
+	const [errors, setErrors] = useState(initialErrors);
 
 	const handleClose = () => login.setRegister(false);
 
+	const handleError = (error) => {
+		console.log(error);
+		setErrors(error);
+	};
+
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		axios.post("/api/users/register", values).catch((error) => {});
-		handleClose();
+		axios.post("/api/users/register", values).then((res) => {
+			if (res.data.error) {
+				handleError(res.data);
+			} else {
+				handleClose();
+			}
+		});
 	};
 
 	const handleChange = (event) => {
@@ -90,6 +108,11 @@ const RegisterDialog = ({ login }) => {
 					/>
 				</DialogContent>
 				<DialogActions>
+					{errors.error && (
+						<Typography variant="subtitle1" color="error">
+							{errors.errorMsg}
+						</Typography>
+					)}
 					<Button onClick={handleClose} color="secondary">
 						Cancel
 					</Button>
