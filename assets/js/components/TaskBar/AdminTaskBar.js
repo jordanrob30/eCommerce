@@ -36,6 +36,7 @@ const AdminTaskBar = () => {
 						component={Link}
 						to={"/"}
 						className={classes.menuButton}
+						color="inherit"
 					>
 						<Home />
 					</IconButton>
