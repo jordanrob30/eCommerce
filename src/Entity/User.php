@@ -74,6 +74,11 @@ class User implements UserInterface
     private $orders;
 
     /**
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+    private $apiToken;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;
@@ -284,6 +289,7 @@ class User implements UserInterface
 
         return $this;
     }
+
 
     public function isVerified(): bool
     {
