@@ -41,23 +41,33 @@ const App = () => {
 	}
 
 	/**
-	 * @param  {{email: string, password: string}} _user user credential object
+	 * @param  {{email: string, password: string}} credentials user credential object
 	 * @return {boolean} authentication success
 	 */
-	const loginUser = async (_user) => {
+	const loginUser = async (credentials) => {
+		let success = false;
+
 		await axios
-			.put("/api/users/auth/init", _user)
-			.then((res) =>
-				res.data.auth_token === "successful" ? setUser(_user) : null
-			)
+			.put("/api/users/auth/init", credentials)
+			.then((res) => {
+				if (res.data[0]) {
+					setUser(res.data[0]);
+					success = true;
+				}
+			})
 			.catch((error) => console.error(error));
 
-		return user ? true : false;
+		return success;
+	};
+
+	const logoutUser = () => {
+		setUser(null);
 	};
 
 	const login = {
 		user: user,
-		setUser: loginUser,
+		login: loginUser,
+		logout: logoutUser,
 		dialog: loginDialog,
 		setDialog: setLoginDialog,
 		register: registerDialog,

@@ -35,7 +35,7 @@ const LoginDialog = ({ login }) => {
 	 */
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		login.setUser(credentials) ? handleClose() : setError(true);
+		login.login(credentials) ? handleClose() : setError(true);
 	};
 
 	/**
