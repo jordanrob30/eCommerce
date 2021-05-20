@@ -61,8 +61,12 @@ const MenuDrawer = ({
 		) : (
 			<Brightness7Rounded />
 		);
-	const loginTitle = login.user ? login.user.id : "Login";
-	const loginAction = login.user ? () => {} : () => login.setDialog(true);
+	const loginTitle = login.user ? login.user.firstname : "Login";
+	const loginAction = login.user
+		? () => {
+				console.log(login.user.id);
+		  }
+		: () => login.setDialog(true);
 	const adminLink = () => history.push("/admin");
 
 	const actions = [
@@ -103,8 +107,8 @@ const MenuDrawer = ({
 				Actions
 			</Typography>
 			<List className={classes.list}>
-				{actions.map((action) => (
-					<ListItem button key={action.title} onClick={action.action}>
+				{actions.map((action, index) => (
+					<ListItem button key={index} onClick={action.action}>
 						<ListItemIcon>{action.icon}</ListItemIcon>
 						<ListItemText primary={action.title} />
 					</ListItem>

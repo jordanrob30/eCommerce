@@ -171,7 +171,7 @@ class UserController extends AbstractController
         $user = $this->userRepository->findOneBy(['email' => $data['email']]);
         try {
             if ($user->getPassword() === $data['password']) {
-                return new JsonResponse(['auth_token' => 'successful']);
+                return $this->readUser($user->getId());
             } else {
                 throw new Throwable("Authentication failed");
             }
