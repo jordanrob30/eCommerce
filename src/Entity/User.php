@@ -74,11 +74,6 @@ class User implements UserInterface
     private $orders;
 
     /**
-     * @ORM\Column(type="string", unique=true, nullable=true)
-     */
-    private $apiToken;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;
@@ -286,18 +281,6 @@ class User implements UserInterface
                 $order->setUserid(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getApiToken(): ?string
-    {
-        return $this->apiToken;
-    }
-
-    public function setApiToken(string $apiToken): self
-    {
-        $this->apiToken = $apiToken;
 
         return $this;
     }
