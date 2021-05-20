@@ -35,8 +35,6 @@ const App = () => {
 			<CssBaseline />
 			<Router>
 				<Switch>
-					<Redirect exact from="/" to="/home" />
-
 					<Route path="/home">
 						<MainPage toggleTheme={toggleTheme} />
 					</Route>
@@ -44,6 +42,8 @@ const App = () => {
 					<Route path="/admin">
 						<AdminPage />
 					</Route>
+
+					<Redirect from="/" to="/home" />
 
 					<Route>
 						<NotFound />

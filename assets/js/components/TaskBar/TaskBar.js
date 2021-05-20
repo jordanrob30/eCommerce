@@ -3,16 +3,15 @@ import {
 	Toolbar,
 	Button,
 	IconButton,
+	Link,
 	makeStyles,
 	useTheme,
 	Box,
-	Typography,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuDrawer from "./MenuDrawer";
 import { Person } from "@material-ui/icons";
-import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -33,7 +32,6 @@ const TaskBar = ({ login, toggleTheme, categories, changeCategories }) => {
 	const theme = useTheme();
 	const [openMenu, setOpenMenu] = useState(false);
 	const classes = useStyles(theme);
-	const history = useHistory();
 
 	return (
 		<>
@@ -56,14 +54,9 @@ const TaskBar = ({ login, toggleTheme, categories, changeCategories }) => {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography
-						onClick={() => history.push("/")}
-						variant="h6"
-						color="inherit"
-						underline="none"
-					>
+					<Link href="/" variant="h6" color="inherit" underline="none">
 						Ecommerce
-					</Typography>
+					</Link>
 					<Box flexGrow={1} />
 					{login.user ? (
 						<IconButton>
