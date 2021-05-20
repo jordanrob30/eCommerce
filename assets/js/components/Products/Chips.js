@@ -10,9 +10,12 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(0.5),
 		margin: 0,
 		overflowX: "auto",
+		backgroundColor: theme.palette.primary.main,
 	},
 	chip: {
 		margin: theme.spacing(0.5),
+		backgroundColor: theme.palette.primary.light,
+		color: theme.palette.common.white,
 	},
 }));
 

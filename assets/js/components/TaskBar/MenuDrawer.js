@@ -15,11 +15,13 @@ import {
 	Brightness7Rounded,
 	ChevronLeft,
 	ChevronRight,
+	Lock,
 	Person,
 } from "@material-ui/icons";
 import React from "react";
+import { useHistory } from "react-router";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
 	list: {
 		width: 250,
 	},
@@ -29,9 +31,9 @@ const useStyles = makeStyles({
 	div: {
 		display: "flex",
 		justifyContent: "flex-end",
-		height: 64,
+		height: theme.mixins.toolbar,
 	},
-});
+}));
 
 /**
  * @param  {boolean} open
@@ -49,8 +51,10 @@ const MenuDrawer = ({
 	categories,
 	changeCategories,
 }) => {
-	const classes = useStyles();
+	const history = useHistory();
 	const theme = useTheme();
+	const classes = useStyles(theme);
+
 	const themeIcon =
 		theme.palette.type === "dark" ? (
 			<Brightness2Rounded />
@@ -58,9 +62,8 @@ const MenuDrawer = ({
 			<Brightness7Rounded />
 		);
 	const loginTitle = login.user ? "Account" : "Login";
-	const loginAction = login.user
-		? () => console.log()
-		: () => login.setDialog(true);
+	const loginAction = login.user ? () => {} : () => login.setDialog(true);
+	const adminLink = () => history.push("/admin");
 
 	const actions = [
 		{
@@ -73,6 +76,11 @@ const MenuDrawer = ({
 			action: loginAction,
 			icon: <Person />,
 		},
+		{
+			title: "Admin",
+			action: adminLink,
+			icon: <Lock />,
+		},
 	];
 
 	return (
@@ -81,7 +89,7 @@ const MenuDrawer = ({
 			open={open}
 			onClose={() => setOpen(false)}
 			onOpen={() => setOpen(true)}
-			swipeAreaWidth={40}
+			swipeAreaWidth={20}
 		>
 			<div className={classes.div}>
 				<IconButton onClick={() => setOpen(false)}>

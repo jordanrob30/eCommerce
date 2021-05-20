@@ -3,9 +3,10 @@ import {
 	Toolbar,
 	Button,
 	IconButton,
-	Typography,
+	Link,
 	makeStyles,
 	useTheme,
+	Box,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -18,9 +19,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	menuButton: {
 		marginRight: "8px",
-	},
-	title: {
-		flexGrow: 1,
 	},
 }));
 
@@ -56,15 +54,20 @@ const TaskBar = ({ login, toggleTheme, categories, changeCategories }) => {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography variant="h6" className={classes.title}>
+					<Link href="/" variant="h6" color="inherit" underline="none">
 						Ecommerce
-					</Typography>
+					</Link>
+					<Box flexGrow={1} />
 					{login.user ? (
 						<IconButton>
 							<Person />
 						</IconButton>
 					) : (
-						<Button color="inherit" onClick={() => login.setDialog(true)}>
+						<Button
+							size="large"
+							color="inherit"
+							onClick={() => login.setDialog(true)}
+						>
 							Login
 						</Button>
 					)}

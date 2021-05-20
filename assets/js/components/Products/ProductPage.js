@@ -18,7 +18,9 @@ const ProductPage = ({ products, title }) => {
 						{title}
 					</Typography>
 				</Grid>
-				<ProductsDisplay products={products} />
+				<Grid item xs={12}>
+					<ProductsDisplay products={products} />
+				</Grid>
 				<Grid item xs={12} />
 			</Grid>
 			<Divider variant="middle" />
