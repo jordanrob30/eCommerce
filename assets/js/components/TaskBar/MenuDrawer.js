@@ -61,7 +61,7 @@ const MenuDrawer = ({
 		) : (
 			<Brightness7Rounded />
 		);
-	const loginTitle = login.user ? "Account" : "Login";
+	const loginTitle = login.user ? login.user.id : "Login";
 	const loginAction = login.user ? () => {} : () => login.setDialog(true);
 	const adminLink = () => history.push("/admin");
 
@@ -96,7 +96,9 @@ const MenuDrawer = ({
 					<ChevronLeft style={{ fontSize: 32 }} />
 				</IconButton>
 			</div>
+
 			<Divider />
+
 			<Typography variant="h5" className={classes.text}>
 				Actions
 			</Typography>
@@ -108,7 +110,9 @@ const MenuDrawer = ({
 					</ListItem>
 				))}
 			</List>
+
 			<Divider />
+
 			<Typography variant="h5" className={classes.text}>
 				Categories
 			</Typography>

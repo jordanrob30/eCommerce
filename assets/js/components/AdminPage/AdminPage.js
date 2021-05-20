@@ -18,7 +18,7 @@ import UserDisplay from "../Users/UserDisplay";
 /**
  * Admin Page component
  */
-const AdminPage = () => {
+const AdminPage = ({ login }) => {
 	const [categories, setCategories] = useState([]);
 	const [products, setProducts] = useState([]);
 	const [userList, setUserList] = useState([]);
