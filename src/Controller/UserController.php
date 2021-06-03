@@ -31,12 +31,12 @@ class UserController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if ($this->validateUniqueUser($data['email']) === false) {
+        if (!$this->doesUserExist($data['email'])) {
             try {
                 $user = new User;
                 $user
                     ->setEmail($data['email'])
-                    ->setRoles($data['roles'])
+                    ->setRoles(["ROLE_USER"])
                     ->setPassword($data['password'])
                     ->setFirstname($data['firstname'])
                     ->setLastname($data['lastname'])
@@ -199,13 +199,13 @@ class UserController extends AbstractController
 
 
 
-    private function validateUniqueUser(String $email): Boolean
+    private function doesUserExist(String $email): bool
     {
         $user = $this->userRepository->findOneBy(['email' => $email]);
-        if ($user) {
-            return new Boolean(false);
+        if (!empty($user)) {
+            return true;
         }
 
-        return new Boolean(true);
+        return false;
     }
 }

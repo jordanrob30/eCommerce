@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,37 +15,33 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class OrderRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    private $entityManager;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Order::class);
+        $this->entityManager = $entityManager;
+
     }
 
-    // /**
-    //  * @return Order[] Returns an array of Order objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function saveOrder(Order $order)
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('o.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Order
+    public function updateOrder(Order $order) : Order
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
+
+        return $order;
     }
-    */
+
+    public function deleteOrder(Order $order)
+    {
+        $this->entityManager->remove($order);
+        $this->entityManager->flush();
+    }
 }
