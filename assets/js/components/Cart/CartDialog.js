@@ -27,18 +27,15 @@ function subtotal(items) {
 		.reduce((sum, i) => sum + i, 0);
 }
 
-const CartDialog = ({ open, closeCart, cart = [] }) => {
+const CartDialog = ({ open, setCartDialog, cart = [] }) => {
 	const Transition = React.forwardRef(function Transition(props, ref) {
 		return <Slide direction="up" ref={ref} {...props} />;
 	});
 
+	const handleClose = () => setCartDialog();
+
 	return (
-		<Dialog
-			open={open}
-			onClose={closeCart}
-			aria-labelledby="User Cart"
-			TransitionComponent={Transition}
-		>
+		<Dialog open={open} onClose={handleClose}>
 			<DialogContent>
 				<Typography variant="h6" align="center" gutterBottom>
 					Cart
@@ -80,9 +77,8 @@ const CartDialog = ({ open, closeCart, cart = [] }) => {
 					</TableBody>
 				</Table>
 			</DialogContent>
-
 			<DialogActions>
-				<Button onClick={closeCart} color="secondary">
+				<Button onClick={handleClose} color="secondary">
 					Close
 				</Button>
 				<Button onClick={() => {}} color="primary" disabled={false}>
