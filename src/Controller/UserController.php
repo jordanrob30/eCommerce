@@ -173,7 +173,7 @@ class UserController extends AbstractController
             if ($user->getPassword() === $data['password']) {
                 return new JsonResponse(['auth_token' => 'successful']);
             } else {
-                throw new \Throwable("Authentication failed");
+                throw new Throwable("Authentication failed");
             }
         } catch (\Throwable $th) {
             return new JsonResponse($$th->getMessage());
