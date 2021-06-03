@@ -41,7 +41,10 @@ const actions = (user, toggleTheme) => {
 
 	let actions = [themes];
 
-	user.roles.includes("ROLE_USER") && actions.push(account);
+	if (user) {
+		user.roles.includes("ROLE_USER") && actions.push(account);
+		user.roles.includes("ROLE_AMIN") && actions.push(admin);
+	}
 
 	return actions;
 };
