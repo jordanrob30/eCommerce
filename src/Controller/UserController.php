@@ -10,6 +10,8 @@ use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/api/users", name="api_users")
@@ -27,7 +29,7 @@ class UserController extends AbstractController
     /**
      * @Route("/register", name="api_users_create", methods={"POST"})
      */
-    public function createUser(Request $request): JsonResponse
+    public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -37,12 +39,18 @@ class UserController extends AbstractController
                 $user
                     ->setEmail($data['email'])
                     ->setRoles(["ROLE_USER"])
-                    ->setPassword($data['password'])
                     ->setFirstname($data['firstname'])
                     ->setLastname($data['lastname'])
                     ->setExternalStripeId('')
                     ->setCreatedtime(new \DateTime())
-                    ->setModifiedtime(new \DateTime());;
+                    ->setModifiedtime(new \DateTime());
+
+                    $user->setPassword(
+                        $passwordEncoder->encodePassword(
+                            $user,
+                            $data["password"]
+                        )
+                    );
 
                 $this->userRepository->saveUser($user);
                 return $this->readUsers();
