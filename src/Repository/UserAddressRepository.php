@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\UserAddress;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,37 +15,31 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserAddressRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    private $entityManager;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, UserAddress::class);
+        $this->entityManager = $entityManager;
     }
 
-    // /**
-    //  * @return UserAddress[] Returns an array of UserAddress objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+    public function saveUserAddress(UserAddress $userAddress) {
+        $this->entityManager->persist($userAddress);
+        $this->entityManager->flush();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?UserAddress
+    public function updateUserAddress(UserAddress $userAddress) : UserAddress
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $this->entityManager->persist($userAddress);
+        $this->entityManager->flush();
+        return $userAddress;
     }
-    */
+
+    public function deleteUserAddress(UserAddress $userAddress)
+    {
+        $this->entityManager->remove($userAddress);
+        $this->entityManager->flush();
+    }
+
 }
