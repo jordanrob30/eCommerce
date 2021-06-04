@@ -16,7 +16,7 @@ const UserDisplay = ({ users }) => {
 		<div>
 			<Grid container justify="center" spacing={2} className={classes.grid}>
 				{users.users.map((user) => (
-					<Grid key={user.id} item xs={12} sm={6} md={4} lg={12} xl={6}>
+					<Grid key={user.id} item xs={12} sm={6} md={4}>
 						<User user={user} users={users} />
 					</Grid>
 				))}
