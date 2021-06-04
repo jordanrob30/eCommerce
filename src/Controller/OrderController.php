@@ -8,6 +8,7 @@ use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
+use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,12 +24,14 @@ class OrderController extends AbstractController
     private $orderRepository;
     private $userRepository;
     private $userAddressRepository;
+    private $stripe;
 
     public function __construct(OrderRepository $orderRepository, UserRepository $userRepository, UserAddressRepository $userAddressRepository)
     {
         $this->orderRepository = $orderRepository;
         $this->userRepository = $userRepository;
         $this->userAddressRepository = $userAddressRepository;
+        $this->stripe = new StripeClient($_ENV["STRIPE_API_KEY"]);
     }
 
     /**
@@ -57,19 +60,40 @@ class OrderController extends AbstractController
                 $userAddress = $data["userAddress"];
             }
 
+            $customerID = $user->getExternalStripeId();
+
+            // JUST FOR TESTING STRIPE
+            // Will charge a fake card £2 each time an order is created
+            $charge = $this->stripe->charges->create([
+                "amount" => 200,
+                "currency" => "gbp",
+                "customer" => $customerID,
+                "shipping" => [
+                    "name" => $user->getFirstname()." ".$user->getLastname(),
+                    "address" => [
+                        "line1" => $userAddress->getLine1(),
+                        "line2" => $userAddress->getLine2(),
+                        "city" => $userAddress->getCity(),
+                        "postal_code" => $userAddress->getPostcode(),
+                        "country" => $userAddress->getCountry()
+                    ]
+                ]
+            ]);
+
             $order = new Order();
             $order
                 ->setUserid($user)
                 ->setNotes($data['notes'])
                 ->setOrderType("Normal")
                 ->setStatus($data['status'])
-                ->setExternalOrderId("NOIDYET")
+                ->setExternalOrderId($charge->id)
                 ->setCreatedtime(new \DateTime())
                 ->setUserAddressId($userAddress)
                 ->setModifiedtime(new \DateTime());
 
             $this->orderRepository->saveOrder($order);
             return $this->readOrders();
+
         }catch (\Throwable $th) {
             return new JsonResponse($th);
         }
@@ -81,7 +105,7 @@ class OrderController extends AbstractController
     public function readOrders(): JsonResponse
     {
         $orders = $this->orderRepository->findAll();
-        $data  = [];
+        $data = [];
 
         foreach($orders as $order){
             $data[] = [
@@ -97,7 +121,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/read/all/{field}/{search}", name="api_orders_read_all_by_feild", methods={"GET"})
+     * @Route("/read/all/{field}/{search}", name="api_orders_read_all_by_field", methods={"GET"})
      */
     public function readOrdersByField($field, $search): JsonResponse
     {
@@ -142,7 +166,7 @@ class OrderController extends AbstractController
 
 
     /**
-     * @Route("/update/all/{id}", name="api_orders_update_field", methods={"PUT"})
+     * @Route("/update/all/{id}", name="api_orders_update", methods={"PUT"})
      *
      */
     public function updateOrder($id, Request $request): JsonResponse
