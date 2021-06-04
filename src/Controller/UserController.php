@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Repository\UserRepository;
 use App\Entity\User;
 use phpDocumentor\Reflection\Types\Boolean;
+use Stripe\Customer;
+use Stripe\Stripe;
+use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,28 +23,37 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends AbstractController
 {
     private $userRepository;
+    private $stripe;
 
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
+        $this->stripe = new StripeClient($_ENV["STRIPE_API_KEY"]);
     }
 
     /**
      * @Route("/register", name="api_users_create", methods={"POST"})
      */
-    public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
+    public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder)//: JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
         if (!$this->doesUserExist($data['email'])) {
             try {
+
+                // Create stripe customer
+                $customer = $this->stripe->customers->create([
+                    "email" => $data["email"],
+                    "name" => $data["firstname"]." ".$data["lastname"]
+                ]);
+
                 $user = new User;
                 $user
                     ->setEmail($data['email'])
                     ->setRoles(["ROLE_USER"])
                     ->setFirstname($data['firstname'])
                     ->setLastname($data['lastname'])
-                    ->setExternalStripeId('')
+                    ->setExternalStripeId($customer->id)
                     ->setCreatedtime(new \DateTime())
                     ->setModifiedtime(new \DateTime());
 
@@ -54,6 +66,7 @@ class UserController extends AbstractController
 
                 $this->userRepository->saveUser($user);
                 return $this->readUsers();
+
             } catch (\Throwable $th) {
                 return new JsonResponse([
                     'error' => true,
@@ -84,7 +97,8 @@ class UserController extends AbstractController
                 'email' => $user->getEmail(),
                 'roles' => $user->getRoles(),
                 'firstname' => $user->getFirstname(),
-                'lastname' => $user->getLastname()
+                'lastname' => $user->getLastname(),
+                'external_stripe_id' => $user->getExternalStripeId()
             ];
         }
 
@@ -103,7 +117,8 @@ class UserController extends AbstractController
             'email' => $user->getEmail(),
             'roles' => $user->getRoles(),
             'firstname' => $user->getFirstname(),
-            'lastname' => $user->getLastname()
+            'lastname' => $user->getLastname(),
+            'external_stripe_id' => $user->getExternalStripeId()
         ];
 
         return new JsonResponse($data);
