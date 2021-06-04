@@ -6,7 +6,6 @@ import {
 	Dialog,
 	DialogActions,
 	DialogContent,
-	DialogContentText,
 	DialogTitle,
 	Typography,
 } from "@material-ui/core";
@@ -35,7 +34,13 @@ const LoginDialog = ({ login }) => {
 	 */
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		login.setUser(credentials) ? handleClose() : setError(true);
+		login.login(credentials).then((success) => {
+			if (success == true) {
+				handleClose();
+			} else {
+				setError(true);
+			}
+		});
 	};
 
 	/**
@@ -80,9 +85,11 @@ const LoginDialog = ({ login }) => {
 						fullWidth
 						required
 					/>
-					<DialogContentText>{error && "Login Failed"}</DialogContentText>
 				</DialogContent>
 				<DialogActions>
+					<Typography variant="inherit" color="error">
+						{error && "Login Failed"}
+					</Typography>
 					<Button onClick={() => login.setRegister(true)} variant="text">
 						register
 					</Button>

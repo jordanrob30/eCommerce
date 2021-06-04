@@ -11,7 +11,7 @@ import {
 import React, { useState } from "react";
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuDrawer from "./MenuDrawer";
-import { Person } from "@material-ui/icons";
+import { Person, ShoppingCart } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -28,7 +28,13 @@ const useStyles = makeStyles((theme) => ({
  * @param  {string[]} categories
  * @param  {function} changeCategories
  */
-const TaskBar = ({ login, toggleTheme, categories, changeCategories }) => {
+const TaskBar = ({
+	login,
+	toggleTheme,
+	categories,
+	changeCategories,
+	openCart,
+}) => {
 	const theme = useTheme();
 	const [openMenu, setOpenMenu] = useState(false);
 	const classes = useStyles(theme);
@@ -59,8 +65,8 @@ const TaskBar = ({ login, toggleTheme, categories, changeCategories }) => {
 					</Link>
 					<Box flexGrow={1} />
 					{login.user ? (
-						<IconButton>
-							<Person />
+						<IconButton onClick={openCart}>
+							<ShoppingCart />
 						</IconButton>
 					) : (
 						<Button

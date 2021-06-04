@@ -1,17 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { ProductPage, TaskBar, LoginDialog, RegisterDialog } from "../";
+import { ProductPage, TaskBar } from "../";
 import axios from "axios";
+import CartDialog from "../Cart/CartDialog";
+
+const _cart = [
+	{
+		name: "Paperclips (Box)",
+		qty: 100,
+		unit: 1.15,
+	},
+	{
+		name: "Paper (Case)",
+		qty: 10,
+		unit: 45.99,
+	},
+	{
+		name: "Waste Basket",
+		qty: 1,
+		unit: 17.99,
+	},
+];
 
 /**
  * @prop  {function} {toggleTheme} toggle theme function
  */
-const MainPage = ({ toggleTheme }) => {
+const MainPage = ({ toggleTheme, login }) => {
 	const [products, setProducts] = useState([]);
-	const [user, setUser] = useState(null);
 	const [categories, setCategories] = useState([]);
 	const [title, setTitle] = useState("All Products");
-	const [loginDialog, setLoginDialog] = useState(false);
-	const [registerDialog, setRegisterDialog] = useState(false);
+	const [cart, setCart] = useState(_cart);
+	const [cartDialog, setCartDialog] = useState(true);
+
+	function closeCart() {
+		setCartDialog(false);
+	}
+
+	function openCart() {
+		setCartDialog(true);
+	}
 
 	/**
 	 * on instantiation of the component current product and category
@@ -28,30 +54,6 @@ const MainPage = ({ toggleTheme }) => {
 			.then((res) => setCategories(res.data))
 			.catch((err) => console.error(err));
 	}, []);
-
-	/**
-	 * @param  {{email: string, password: string}} _user user credential object
-	 * @return {boolean} authentication success
-	 */
-	const loginUser = async (_user) => {
-		await axios
-			.put("/api/users/auth/init", _user)
-			.then((res) =>
-				res.data.auth_token === "successful" ? setUser(_user) : null
-			)
-			.catch((error) => console.error(error));
-
-		return user ? true : false;
-	};
-
-	const login = {
-		user: user,
-		setUser: loginUser,
-		dialog: loginDialog,
-		setDialog: setLoginDialog,
-		register: registerDialog,
-		setRegister: setRegisterDialog,
-	};
 
 	/**
 	 * @param  {string} category="*" name of category to update products to, if default updates products to all products
@@ -74,15 +76,15 @@ const MainPage = ({ toggleTheme }) => {
 
 	return (
 		<>
-			<LoginDialog login={login} />
-			<RegisterDialog login={login} />
 			<TaskBar
 				login={login}
 				toggleTheme={toggleTheme}
 				categories={categories}
 				changeCategories={changeCategories}
+				openCart={openCart}
 			/>
 			<ProductPage products={products} title={title} />
+			<CartDialog open={cartDialog} setCartDialog={closeCart} cart={cart} />
 		</>
 	);
 };

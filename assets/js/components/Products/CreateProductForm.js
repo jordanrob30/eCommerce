@@ -54,6 +54,8 @@ NumberFormatCustom.propTypes = {
 const useStyles = makeStyles(() => ({
 	Paper: {
 		padding: 8,
+		margin: 16,
+		maxwidth: "50%",
 	},
 	autocomplete: {
 		marginTop: 8,

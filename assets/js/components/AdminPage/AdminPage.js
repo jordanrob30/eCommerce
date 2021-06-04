@@ -5,6 +5,11 @@ import {
 	Container,
 	Divider,
 	Grid,
+	Paper,
+	List,
+	ListItem,
+	ListItemIcon,
+	ListItemText,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import React, { useState, useEffect } from "react";
@@ -14,11 +19,12 @@ import { AdminTaskBar, EditDialog, DeleteDialog } from "..";
 import { CreateProductForm } from "..";
 import ProductsDisplay from "../Products/ProductsDisplay";
 import UserDisplay from "../Users/UserDisplay";
+import { Add, Menu, People, ShoppingCart } from "@material-ui/icons";
 
 /**
  * Admin Page component
  */
-const AdminPage = () => {
+const AdminPage = ({ login }) => {
 	const [categories, setCategories] = useState([]);
 	const [products, setProducts] = useState([]);
 	const [userList, setUserList] = useState([]);
@@ -26,6 +32,8 @@ const AdminPage = () => {
 	const [deleteDialog, setDeleteDialog] = useState(false);
 	const [values, setValues] = useState({});
 	const [id, setId] = useState(null);
+
+	const [tab, setTab] = useState(0);
 
 	/**
 	 * on instantiation of the component current product and category
@@ -70,15 +78,18 @@ const AdminPage = () => {
 
 	const tabs = [
 		{
-			title: "All Products",
-			contents: <ProductsDisplay products={products} size={0} />,
+			title: "Products",
+			icon: <ShoppingCart />,
+			contents: <ProductsDisplay products={products} size={1} />,
 		},
 		{
-			title: "Create New Product",
+			title: "Create Product",
+			icon: <Add />,
 			contents: <CreateProductForm categories={categories} />,
 		},
 		{
-			title: "All Users",
+			title: "Users",
+			icon: <People />,
 			contents: <UserDisplay users={users} />,
 		},
 	];
@@ -86,25 +97,31 @@ const AdminPage = () => {
 	return (
 		<>
 			<AdminTaskBar />
-			<Container maxWidth={false}>
-				<Grid container justify="center" spacing={2}>
-					<Grid item xs={12} />
-
-					{tabs.map((tab, index) => (
-						<Grid item xs={12} md={6} lg={4} key={tab.title}>
-							<Accordion>
-								<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-									<Typography variant="h5">{tab.title}</Typography>
-								</AccordionSummary>
-								{tab.contents}
-							</Accordion>
-						</Grid>
-					))}
-
-					<Grid item xs={12} />
+			<Grid container justify="center">
+				<Grid item xs={4} sm={3} md={2}>
+					<Paper square height="100%">
+						<List component="nav">
+							{tabs.map((option, index) => (
+								<ListItem
+									key={option.title + index}
+									onClick={() => setTab(index)}
+									selected={tab === index}
+									button
+								>
+									<ListItemIcon>{option.icon}</ListItemIcon>
+									<ListItemText>{option.title}</ListItemText>
+								</ListItem>
+							))}
+						</List>
+					</Paper>
 				</Grid>
-				<Divider variant="middle" />
-			</Container>
+				<Grid item xs={8} sm={9} md={10}>
+					<Typography variant="h3" align="center" color="textPrimary">
+						{tabs[tab].title}
+					</Typography>
+					{tabs[tab].contents}
+				</Grid>
+			</Grid>
 
 			<EditDialog
 				open={editDialog}
