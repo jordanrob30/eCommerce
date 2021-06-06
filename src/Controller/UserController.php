@@ -124,6 +124,25 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/read/all/email/{email}", name="api_users_read_email", methods={"GET"} )
+     */
+    public function readUserByEmail($email): JsonResponse
+    {
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+
+        $data[] = [
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'roles' => $user->getRoles(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'external_stripe_id' => $user->getExternalStripeId()
+        ];
+
+        return new JsonResponse($data);
+    }
+
+    /**
      * @Route("/update/{field}/{id}", name="api_users_field_update", methods={"PUT"})
      *
      */

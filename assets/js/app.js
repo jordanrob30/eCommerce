@@ -23,6 +23,7 @@ const App = () => {
 	const [user, setUser] = useState(null);
 	const [loginDialog, setLoginDialog] = useState(false);
 	const [registerDialog, setRegisterDialog] = useState(false);
+	const [token, setToken] = useState(null);
 
 	/**
 	 * Changes theme state based on current theme
@@ -40,22 +41,50 @@ const App = () => {
 		}
 	}
 
+	const getUser = async (credentials, token_) => {
+		await axios
+			.get("/api/users/read/all/email/" + credentials.email, {
+				headers: {
+					Authorization: token_,
+					"Content-Type": "application/json",
+				},
+			})
+			.then((res) => setUser(res.data[0]));
+	};
+
 	/**
 	 * @param  {{email: string, password: string}} credentials user credential object
 	 * @return {boolean} authentication success
 	 */
-	const loginUser = async (credentials) => {
+	const authUser = async (credentials) => {
 		let success = false;
+		let tkn;
 
 		await axios
 			.put("/api/users/auth/init", credentials)
 			.then((res) => {
-				if (res.data[0]) {
-					setUser(res.data[0]);
+				tkn = "BEARER " + res.data.token;
+				if (tkn) {
+					setToken(tkn);
 					success = true;
 				}
 			})
 			.catch((error) => console.error(error));
+
+		if (success) {
+			return tkn;
+		}
+
+		return false;
+	};
+
+	const loginUser = async (credentials) => {
+		let success = false;
+
+		await authUser(credentials).then((token_) => {
+			token_ && getUser(credentials, token_);
+			success = true;
+		});
 
 		return success;
 	};
