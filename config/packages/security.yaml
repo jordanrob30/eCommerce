@@ -24,6 +24,13 @@ security:
         success_handler: lexik_jwt_authentication.handler.authentication_success
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
+    auth:
+      pattern: ^/api/users/auth
+      stateless: true
+      guard:
+        authenticators:
+          - lexik_jwt_authentication.jwt_token_authenticator
+
     read_products:
       pattern: ^/api/products/read/
       stateless: true

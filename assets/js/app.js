@@ -1,5 +1,5 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { render } from "react-dom";
 import {
 	BrowserRouter as Router,
@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 
 import themes from "../styles/themes";
+import Cookies from "js-cookie";
 
 const App = () => {
 	const [theme, setTheme] = useState(themes.dark);
@@ -41,9 +42,9 @@ const App = () => {
 		}
 	}
 
-	const getUser = async (credentials, token_) => {
+	const getUser = async (email, token_) => {
 		await axios
-			.get("/api/users/read/all/email/" + credentials.email, {
+			.get("/api/users/read/all/email/" + email, {
 				headers: {
 					Authorization: token_,
 					"Content-Type": "application/json",
@@ -82,7 +83,8 @@ const App = () => {
 		let success = false;
 
 		await authUser(credentials).then((token_) => {
-			token_ && getUser(credentials, token_);
+			token_ && getUser(credentials.email, token_);
+			Cookies.set("Auth", { email: credentials.email, token: token_ });
 			success = true;
 		});
 
@@ -93,8 +95,27 @@ const App = () => {
 		setUser(null);
 	};
 
+	const authToken = async (auth) => {
+		console.log(auth.token);
+		try {
+			await axios
+				.get("/api/users/auth", {
+					headers: {
+						Authorization: auth.token,
+						"Content-Type": "application/json",
+					},
+				})
+				.then(() => {
+					getUser(auth.email, auth.token);
+				});
+		} catch (err) {
+			return null;
+		}
+	};
+
 	const login = {
 		user: user,
+		token: token,
 		login: loginUser,
 		logout: logoutUser,
 		dialog: loginDialog,
@@ -102,6 +123,10 @@ const App = () => {
 		register: registerDialog,
 		setRegister: setRegisterDialog,
 	};
+
+	useEffect(() => {
+		authToken(JSON.parse(Cookies.get("Auth")));
+	}, []);
 
 	return (
 		<ThemeProvider theme={theme}>

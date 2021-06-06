@@ -222,20 +222,11 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/auth"), name="api_user_auth", methods={"PUT"}
+     * @Route("/auth"), name="api_user_auth", methods={"GET"}
      */
-    public function authUser(Request $request): JsonResponse
+    public function authUser(): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        try {
-            if ($data['auth_token'] === "successful") {
-                return new JsonResponse(true);
-            } else {
-                return new JsonResponse(false);
-            }
-        } catch (\Throwable $th) {
-            return new JsonResponse($th->getMessage());
-        }
+        return new JsonResponse(true);
     }
 
 
