@@ -34,7 +34,7 @@ class UserController extends AbstractController
     /**
      * @Route("/register", name="api_users_create", methods={"POST"})
      */
-    public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder)//: JsonResponse
+    public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder) //: JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -44,7 +44,7 @@ class UserController extends AbstractController
                 // Create stripe customer
                 $customer = $this->stripe->customers->create([
                     "email" => $data["email"],
-                    "name" => $data["firstname"]." ".$data["lastname"]
+                    "name" => $data["firstname"] . " " . $data["lastname"]
                 ]);
 
                 $user = new User;
@@ -57,16 +57,15 @@ class UserController extends AbstractController
                     ->setCreatedtime(new \DateTime())
                     ->setModifiedtime(new \DateTime());
 
-                    $user->setPassword(
-                        $passwordEncoder->encodePassword(
-                            $user,
-                            $data["password"]
-                        )
-                    );
+                $user->setPassword(
+                    $passwordEncoder->encodePassword(
+                        $user,
+                        $data["password"]
+                    )
+                );
 
                 $this->userRepository->saveUser($user);
                 return $this->readUsers();
-
             } catch (\Throwable $th) {
                 return new JsonResponse([
                     'error' => true,
@@ -188,12 +187,12 @@ class UserController extends AbstractController
     /**
      * @Route("/auth/init"), name="api_user_auth_init", methods={"PUT"}
      */
-    public function initAuthUser(Request $request): JsonResponse
+    public function initAuthUser(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $user = $this->userRepository->findOneBy(['email' => $data['email']]);
         try {
-            if ($user->getPassword() === $data['password']) {
+            if ($passwordEncoder->isPasswordValid($user, $data['password'])) {
                 return $this->readUser($user->getId());
             } else {
                 throw new Throwable("Authentication failed");
