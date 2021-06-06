@@ -29,7 +29,7 @@ const MainPage = ({ toggleTheme, login }) => {
 	const [categories, setCategories] = useState([]);
 	const [title, setTitle] = useState("All Products");
 	const [cart, setCart] = useState(_cart);
-	const [cartDialog, setCartDialog] = useState(true);
+	const [cartDialog, setCartDialog] = useState(false);
 
 	function closeCart() {
 		setCartDialog(false);
