@@ -84,7 +84,11 @@ const App = () => {
 
 		await authUser(credentials).then((token_) => {
 			token_ && getUser(credentials.email, token_);
-			Cookies.set("Auth", { email: credentials.email, token: token_ });
+			Cookies.set("User", {
+				email: credentials.email,
+				token: token_,
+				cart: [],
+			});
 			success = true;
 		});
 
@@ -93,19 +97,20 @@ const App = () => {
 
 	const logoutUser = () => {
 		setUser(null);
+		Cookies.remove("User");
 	};
 
-	const authToken = async (auth) => {
+	const authToken = async (User) => {
 		try {
 			await axios
 				.get("/api/users/auth", {
 					headers: {
-						Authorization: auth.token,
+						Authorization: User.token,
 						"Content-Type": "application/json",
 					},
 				})
 				.then(() => {
-					getUser(auth.email, auth.token);
+					getUser(User.email, User.token);
 				});
 		} catch (err) {
 			return null;
@@ -124,7 +129,7 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		authToken(JSON.parse(Cookies.get("Auth")));
+		authToken(Cookies.getJSON("User"));
 	}, []);
 
 	return (

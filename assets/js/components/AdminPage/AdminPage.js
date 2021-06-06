@@ -48,7 +48,7 @@ const AdminPage = ({ login }) => {
 		axios
 			.get("/api/users/read/all/", {
 				headers: {
-					Authorization: JSON.parse(Cookies.get("Auth")).token,
+					Authorization: Cookies.getJSON("User").token,
 					"Content-Type": "application/json",
 				},
 			})

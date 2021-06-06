@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
  *
  * product card component
  */
-const Product = ({ product }) => {
+const Product = ({ product, cart }) => {
 	const theme = useTheme();
 	const classes = useStyles(theme);
 
@@ -73,7 +73,11 @@ const Product = ({ product }) => {
 				<CardActions disableSpacing className={classes.cardActions}>
 					<Chips tags={product.tags} />
 					{product.stock > 0 ? (
-						<IconButton aria-label="Add to Cart" color="inherit">
+						<IconButton
+							aria-label="Add to Cart"
+							color="inherit"
+							onClick={() => cart.add(product.id)}
+						>
 							<AddShoppingCartIcon />
 						</IconButton>
 					) : (
