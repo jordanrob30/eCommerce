@@ -96,7 +96,6 @@ const App = () => {
 	};
 
 	const authToken = async (auth) => {
-		console.log(auth.token);
 		try {
 			await axios
 				.get("/api/users/auth", {
