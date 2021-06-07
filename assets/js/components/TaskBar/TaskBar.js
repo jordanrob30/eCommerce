@@ -7,6 +7,7 @@ import {
 	makeStyles,
 	useTheme,
 	Box,
+	Badge,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -34,6 +35,7 @@ const TaskBar = ({
 	categories,
 	changeCategories,
 	openCart,
+	cartSize,
 }) => {
 	const theme = useTheme();
 	const [openMenu, setOpenMenu] = useState(false);
@@ -66,7 +68,9 @@ const TaskBar = ({
 					<Box flexGrow={1} />
 					{login.user ? (
 						<IconButton onClick={openCart}>
-							<ShoppingCart />
+							<Badge color="secondary" badgeContent={cartSize}>
+								<ShoppingCart />
+							</Badge>
 						</IconButton>
 					) : (
 						<Button

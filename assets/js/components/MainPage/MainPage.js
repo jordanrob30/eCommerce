@@ -13,15 +13,21 @@ const MainPage = ({ toggleTheme, login }) => {
 	const [title, setTitle] = useState("All Products");
 	const [cart, setCart] = useState([]);
 	const [cartDialog, setCartDialog] = useState(false);
+	const [cartSize, setcartSize] = useState(0);
 
-	function closeCart() {
+	const closeCart = () => {
 		setCartDialog(false);
-	}
+	};
 
-	function openCart() {
+	const openCart = () => {
 		setCart(Cookies.getJSON("User").cart);
 		setCartDialog(true);
-	}
+	};
+
+	const updateCart = () => {
+		let cookie = Cookies.getJSON("User");
+		cookie && setcartSize(cookie.cartSize);
+	};
 
 	/**
 	 * on instantiation of the component current product and category
@@ -29,6 +35,7 @@ const MainPage = ({ toggleTheme, login }) => {
 	 * updated
 	 */
 	useEffect(() => {
+		updateCart();
 		axios
 			.get("/api/products/read/all/")
 			.then((res) => setProducts(res.data))
@@ -66,9 +73,15 @@ const MainPage = ({ toggleTheme, login }) => {
 				categories={categories}
 				changeCategories={changeCategories}
 				openCart={openCart}
+				cartSize={cartSize}
 			/>
-			<ProductPage products={products} title={title} login={login} />
-			<CartDialog open={cartDialog} setCartDialog={setCartDialog} cart={cart} />
+			<ProductPage
+				products={products}
+				title={title}
+				login={login}
+				updateCart={updateCart}
+			/>
+			<CartDialog open={cartDialog} closeCart={closeCart} cart={cart} />
 		</>
 	);
 };

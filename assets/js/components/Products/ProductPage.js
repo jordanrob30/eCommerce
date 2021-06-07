@@ -7,7 +7,7 @@ import ProductsDisplay from "./ProductsDisplay";
  * @prop  {object[]} {products} array of product objects
  * @prop  {string} {title} title of product page based on category name
  */
-const ProductPage = ({ products, title, login }) => {
+const ProductPage = ({ products, title, login, updateCart }) => {
 	return (
 		<Container>
 			<Grid container justify="center" spacing={2}>
@@ -19,7 +19,11 @@ const ProductPage = ({ products, title, login }) => {
 					</Typography>
 				</Grid>
 				<Grid item xs={12}>
-					<ProductsDisplay products={products} login={login} />
+					<ProductsDisplay
+						products={products}
+						login={login}
+						updateCart={() => updateCart()}
+					/>
 				</Grid>
 				<Grid item xs={12} />
 			</Grid>
