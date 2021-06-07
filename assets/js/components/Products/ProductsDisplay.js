@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
  * @param  {object[]} products array of product objects
  * @param  {int=} size optional size value for sizing grid
  */
-const ProductsDisplay = ({ products, size = 1, login }) => {
+const ProductsDisplay = ({ products, size = 1, login, updateCart }) => {
 	const classes = useStyles();
 
 	const sizing =
@@ -45,7 +45,11 @@ const ProductsDisplay = ({ products, size = 1, login }) => {
 						md={sizing.md}
 						lg={sizing.lg}
 					>
-						<Product product={product} login={login} />
+						<Product
+							product={product}
+							login={login}
+							updateCart={() => updateCart()}
+						/>
 					</Grid>
 				))}
 			</Grid>

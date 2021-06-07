@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const addToCart = (product, login) => {
+const addToCart = (product, login, updateCart) => {
 	if (login.user) {
 		let User = Cookies.getJSON("User");
 		//{id, name, unit, qty}
@@ -50,7 +50,9 @@ const addToCart = (product, login) => {
 			  });
 		item.qty++;
 		User.cart.push(item);
+		User.cartSize++;
 		Cookies.set("User", User);
+		updateCart();
 	} else {
 		login.setDialog(true);
 	}
@@ -65,7 +67,7 @@ const Cart = {
  *
  * product card component
  */
-const Product = ({ product, login }) => {
+const Product = ({ product, login, updateCart }) => {
 	const theme = useTheme();
 	const classes = useStyles(theme);
 
@@ -104,7 +106,7 @@ const Product = ({ product, login }) => {
 						<IconButton
 							aria-label="Add to Cart"
 							color="inherit"
-							onClick={() => Cart.add(product, login)}
+							onClick={() => Cart.add(product, login, updateCart)}
 						>
 							<AddShoppingCartIcon />
 						</IconButton>

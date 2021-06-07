@@ -84,11 +84,16 @@ const App = () => {
 
 		await authUser(credentials).then((token_) => {
 			token_ && getUser(credentials.email, token_);
-			Cookies.set("User", {
-				email: credentials.email,
-				token: token_,
-				cart: [],
-			});
+			Cookies.set(
+				"User",
+				{
+					email: credentials.email,
+					token: token_,
+					cart: [],
+					cartSize: 0,
+				},
+				{ expires: 7 }
+			);
 			success = true;
 		});
 
