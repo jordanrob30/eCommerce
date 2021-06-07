@@ -51,7 +51,6 @@ const addToCart = (product, login) => {
 		item.qty++;
 		User.cart.push(item);
 		Cookies.set("User", User);
-		console.log(User.cart);
 	} else {
 		login.setDialog(true);
 	}
