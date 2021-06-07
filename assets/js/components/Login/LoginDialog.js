@@ -21,7 +21,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
  * @prop {{user: object, setUser: function, dialog: boolean, setDialog: function}} {login}
  */
 const LoginDialog = ({ login }) => {
-	const [credentials, setCredentials] = useState({ email: "", password: "" });
+	const [credentials, setCredentials] = useState({
+		email: "",
+		username: "",
+		password: "",
+	});
 	const [error, setError] = useState(false);
 
 	const handleClose = () => login.setDialog(false);
@@ -34,6 +38,7 @@ const LoginDialog = ({ login }) => {
 	 */
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		credentials.username = credentials.email;
 		login.login(credentials).then((success) => {
 			if (success == true) {
 				handleClose();

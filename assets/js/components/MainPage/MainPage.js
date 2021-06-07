@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ProductPage, TaskBar } from "../";
 import axios from "axios";
 import CartDialog from "../Cart/CartDialog";
+import Cookies from "js-cookie";
 
 const _cart = [
 	{
@@ -28,8 +29,8 @@ const MainPage = ({ toggleTheme, login }) => {
 	const [products, setProducts] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [title, setTitle] = useState("All Products");
-	const [cart, setCart] = useState(_cart);
-	const [cartDialog, setCartDialog] = useState(true);
+	//const [cart, setCart] = useState(Cookies.getJSON("User").cart);
+	const [cartDialog, setCartDialog] = useState(false);
 
 	function closeCart() {
 		setCartDialog(false);
@@ -74,6 +75,17 @@ const MainPage = ({ toggleTheme, login }) => {
 		}
 	};
 
+	const addToCart = (product) => {
+		let User = Cookies.getJSON("User");
+		console.log(User.cart);
+		User.cart.push(product);
+		Cookies.set("User", User);
+	};
+
+	const Cart = {
+		add: addToCart,
+	};
+
 	return (
 		<>
 			<TaskBar
@@ -83,8 +95,7 @@ const MainPage = ({ toggleTheme, login }) => {
 				changeCategories={changeCategories}
 				openCart={openCart}
 			/>
-			<ProductPage products={products} title={title} />
-			<CartDialog open={cartDialog} setCartDialog={closeCart} cart={cart} />
+			<ProductPage products={products} title={title} cart={Cart} />
 		</>
 	);
 };

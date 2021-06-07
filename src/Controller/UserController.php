@@ -34,7 +34,7 @@ class UserController extends AbstractController
     /**
      * @Route("/register", name="api_users_create", methods={"POST"})
      */
-    public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder)//: JsonResponse
+    public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder) //: JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -44,7 +44,7 @@ class UserController extends AbstractController
                 // Create stripe customer
                 $customer = $this->stripe->customers->create([
                     "email" => $data["email"],
-                    "name" => $data["firstname"]." ".$data["lastname"]
+                    "name" => $data["firstname"] . " " . $data["lastname"]
                 ]);
 
                 $user = new User;
@@ -57,16 +57,15 @@ class UserController extends AbstractController
                     ->setCreatedtime(new \DateTime())
                     ->setModifiedtime(new \DateTime());
 
-                    $user->setPassword(
-                        $passwordEncoder->encodePassword(
-                            $user,
-                            $data["password"]
-                        )
-                    );
+                $user->setPassword(
+                    $passwordEncoder->encodePassword(
+                        $user,
+                        $data["password"]
+                    )
+                );
 
                 $this->userRepository->saveUser($user);
                 return $this->readUsers();
-
             } catch (\Throwable $th) {
                 return new JsonResponse([
                     'error' => true,
@@ -111,6 +110,25 @@ class UserController extends AbstractController
     public function readUser($id): JsonResponse
     {
         $user = $this->userRepository->findOneBy(['id' => $id]);
+
+        $data[] = [
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'roles' => $user->getRoles(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'external_stripe_id' => $user->getExternalStripeId()
+        ];
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/read/all/email/{email}", name="api_users_read_email", methods={"GET"} )
+     */
+    public function readUserByEmail($email): JsonResponse
+    {
+        $user = $this->userRepository->findOneBy(['email' => $email]);
 
         $data[] = [
             'id' => $user->getId(),
@@ -188,12 +206,12 @@ class UserController extends AbstractController
     /**
      * @Route("/auth/init"), name="api_user_auth_init", methods={"PUT"}
      */
-    public function initAuthUser(Request $request): JsonResponse
+    public function initAuthUser(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $user = $this->userRepository->findOneBy(['email' => $data['email']]);
         try {
-            if ($user->getPassword() === $data['password']) {
+            if ($passwordEncoder->isPasswordValid($user, $data['password'])) {
                 return $this->readUser($user->getId());
             } else {
                 throw new Throwable("Authentication failed");
@@ -204,20 +222,11 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/auth"), name="api_user_auth", methods={"PUT"}
+     * @Route("/auth"), name="api_user_auth", methods={"GET"}
      */
-    public function authUser(Request $request): JsonResponse
+    public function authUser(): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        try {
-            if ($data['auth_token'] === "successful") {
-                return new JsonResponse(true);
-            } else {
-                return new JsonResponse(false);
-            }
-        } catch (\Throwable $th) {
-            return new JsonResponse($th->getMessage());
-        }
+        return new JsonResponse(true);
     }
 
 

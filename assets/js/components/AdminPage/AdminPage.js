@@ -1,9 +1,5 @@
 import {
-	Accordion,
 	Typography,
-	AccordionSummary,
-	Container,
-	Divider,
 	Grid,
 	Paper,
 	List,
@@ -11,7 +7,6 @@ import {
 	ListItemIcon,
 	ListItemText,
 } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -19,7 +14,8 @@ import { AdminTaskBar, EditDialog, DeleteDialog } from "..";
 import { CreateProductForm } from "..";
 import ProductsDisplay from "../Products/ProductsDisplay";
 import UserDisplay from "../Users/UserDisplay";
-import { Add, Menu, People, ShoppingCart } from "@material-ui/icons";
+import { Add, People, ShoppingCart } from "@material-ui/icons";
+import Cookies from "js-cookie";
 
 /**
  * Admin Page component
@@ -50,7 +46,12 @@ const AdminPage = ({ login }) => {
 			.then((res) => setCategories(res.data))
 			.catch((err) => console.error(err));
 		axios
-			.get("/api/users/read/all/")
+			.get("/api/users/read/all/", {
+				headers: {
+					Authorization: Cookies.getJSON("User").token,
+					"Content-Type": "application/json",
+				},
+			})
 			.then((res) => setUserList(res.data))
 			.catch((err) => console.log(err));
 	}, []);
