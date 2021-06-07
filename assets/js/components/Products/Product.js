@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
+import Cookies from "js-cookie";
 import React from "react";
 import Chips from "./Chips";
 
@@ -32,12 +33,39 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: "space-between",
 	},
 }));
+
+const addToCart = (product, login) => {
+	if (login.user) {
+		let User = Cookies.getJSON("User");
+		//{id, name, unit, qty}
+		let itemIndex = User.cart.findIndex((_item) => _item.id === product.id);
+		let item;
+		itemIndex > -1
+			? (item = User.cart.splice(itemIndex)[0])
+			: (item = {
+					id: product.id,
+					name: product.name,
+					unit: product.sellPrice,
+					qty: 0,
+			  });
+		item.qty++;
+		User.cart.push(item);
+		Cookies.set("User", User);
+	} else {
+		login.setDialog(true);
+	}
+};
+
+const Cart = {
+	add: addToCart,
+};
+
 /**
  * @param  {object} {product} product object
  *
  * product card component
  */
-const Product = ({ product, cart }) => {
+const Product = ({ product, login }) => {
 	const theme = useTheme();
 	const classes = useStyles(theme);
 
@@ -76,7 +104,7 @@ const Product = ({ product, cart }) => {
 						<IconButton
 							aria-label="Add to Cart"
 							color="inherit"
-							onClick={() => cart.add(product.id)}
+							onClick={() => Cart.add(product, login)}
 						>
 							<AddShoppingCartIcon />
 						</IconButton>
