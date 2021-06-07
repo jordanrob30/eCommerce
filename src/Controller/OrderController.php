@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\OrderProduct;
 use App\Entity\Product;
+use App\Repository\OrderProductRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserAddressRepository;
@@ -24,13 +26,17 @@ class OrderController extends AbstractController
     private $orderRepository;
     private $userRepository;
     private $userAddressRepository;
+    private $orderProductRepository;
+    private $productRepository;
     private $stripe;
 
-    public function __construct(OrderRepository $orderRepository, UserRepository $userRepository, UserAddressRepository $userAddressRepository)
+    public function __construct(OrderRepository $orderRepository, UserRepository $userRepository, UserAddressRepository $userAddressRepository, OrderProductRepository $orderProductRepository, ProductRepository $productRepository)
     {
         $this->orderRepository = $orderRepository;
         $this->userRepository = $userRepository;
         $this->userAddressRepository = $userAddressRepository;
+        $this->orderProductRepository = $orderProductRepository;
+        $this->productRepository = $productRepository;
         $this->stripe = new StripeClient($_ENV["STRIPE_API_KEY"]);
     }
 
@@ -40,10 +46,11 @@ class OrderController extends AbstractController
     public function createOrder(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+        $errors = [];
 
         try {
 
-            //get user if not object
+            // get user if not object
             if(is_numeric($data['user']))
             {
                 $user = $this->userRepository->find($data["user"]);
@@ -52,6 +59,7 @@ class OrderController extends AbstractController
                 $user = $data["user"];
             }
 
+            // get user address if not object
             if(is_numeric($data['userAddress']))
             {
                 $userAddress = $this->userAddressRepository->find($data["userAddress"]);
@@ -60,12 +68,53 @@ class OrderController extends AbstractController
                 $userAddress = $data["userAddress"];
             }
 
+            if (sizeof($data["products"]) == 0) {
+                $errors[] = "Empty cart";
+                return new JsonResponse(["errors"=>$errors], 200);
+            }
+
+            // Create new order
+            $order = new Order();
+            $order
+                ->setUserid($user)
+                ->setNotes($data['notes'])
+                ->setOrderType("Normal")
+                ->setStatus($data['status'])
+                ->setExternalOrderId("placeholder")
+                ->setCreatedtime(new \DateTime())
+                ->setUserAddressId($userAddress)
+                ->setModifiedtime(new \DateTime());
+            $this->orderRepository->saveOrder($order);
+
+            $totalPrice = 0;
+
+            // Create OrderProduct objects from data
+            $productsData = $data["products"];
+            foreach($productsData as $productData) {
+                // get product if not object
+                if(is_numeric($productData['product']))
+                {
+                    $product = $this->productRepository->find($productData["product"]);
+                }
+                else{
+                    $product = $productData["product"];
+                }
+
+                $totalPrice += $product->getSellprice() * intval($productData["qty"]);
+
+                $orderProduct = new OrderProduct();
+                $orderProduct
+                    ->setOrderid($order)
+                    ->setDiscountValue(0)
+                    ->setProductid($product)
+                    ->setQty($productData["qty"]);
+                $this->orderProductRepository->saveOrderProduct($orderProduct);
+            }
+
             $customerID = $user->getExternalStripeId();
 
-            // JUST FOR TESTING STRIPE
-            // Will charge a fake card £2 each time an order is created
             $charge = $this->stripe->charges->create([
-                "amount" => 200,
+                "amount" => $totalPrice*100,
                 "currency" => "gbp",
                 "customer" => $customerID,
                 "shipping" => [
@@ -80,18 +129,9 @@ class OrderController extends AbstractController
                 ]
             ]);
 
-            $order = new Order();
-            $order
-                ->setUserid($user)
-                ->setNotes($data['notes'])
-                ->setOrderType("Normal")
-                ->setStatus($data['status'])
-                ->setExternalOrderId($charge->id)
-                ->setCreatedtime(new \DateTime())
-                ->setUserAddressId($userAddress)
-                ->setModifiedtime(new \DateTime());
-
+            $order->setExternalOrderId($charge->id);
             $this->orderRepository->saveOrder($order);
+
             return $this->readOrders();
 
         }catch (\Throwable $th) {
