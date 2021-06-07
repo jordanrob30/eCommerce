@@ -43,12 +43,6 @@ const CartDialog = ({ open, setCartDialog, cart = [] }) => {
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell align="left" colSpan={3}>
-								Products
-							</TableCell>
-							<TableCell align="right">Price</TableCell>
-						</TableRow>
-						<TableRow>
 							<TableCell>Product Name</TableCell>
 							<TableCell align="right">Qty.</TableCell>
 							<TableCell align="right">Price</TableCell>

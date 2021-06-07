@@ -4,24 +4,6 @@ import axios from "axios";
 import CartDialog from "../Cart/CartDialog";
 import Cookies from "js-cookie";
 
-const _cart = [
-	{
-		name: "Paperclips (Box)",
-		qty: 100,
-		unit: 1.15,
-	},
-	{
-		name: "Paper (Case)",
-		qty: 10,
-		unit: 45.99,
-	},
-	{
-		name: "Waste Basket",
-		qty: 1,
-		unit: 17.99,
-	},
-];
-
 /**
  * @prop  {function} {toggleTheme} toggle theme function
  */
@@ -29,7 +11,7 @@ const MainPage = ({ toggleTheme, login }) => {
 	const [products, setProducts] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [title, setTitle] = useState("All Products");
-	//const [cart, setCart] = useState(Cookies.getJSON("User").cart);
+	const [cart, setCart] = useState([]);
 	const [cartDialog, setCartDialog] = useState(false);
 
 	function closeCart() {
@@ -37,6 +19,7 @@ const MainPage = ({ toggleTheme, login }) => {
 	}
 
 	function openCart() {
+		setCart(Cookies.getJSON("User").cart);
 		setCartDialog(true);
 	}
 
@@ -75,17 +58,6 @@ const MainPage = ({ toggleTheme, login }) => {
 		}
 	};
 
-	const addToCart = (product) => {
-		let User = Cookies.getJSON("User");
-		console.log(User.cart);
-		User.cart.push(product);
-		Cookies.set("User", User);
-	};
-
-	const Cart = {
-		add: addToCart,
-	};
-
 	return (
 		<>
 			<TaskBar
@@ -95,7 +67,8 @@ const MainPage = ({ toggleTheme, login }) => {
 				changeCategories={changeCategories}
 				openCart={openCart}
 			/>
-			<ProductPage products={products} title={title} cart={Cart} />
+			<ProductPage products={products} title={title} login={login} />
+			<CartDialog open={cartDialog} setCartDialog={setCartDialog} cart={cart} />
 		</>
 	);
 };
