@@ -3,6 +3,7 @@ import { ProductPage, TaskBar } from "../";
 import axios from "axios";
 import CartDialog from "../Cart/CartDialog";
 import Cookies from "js-cookie";
+import CardDialog from "../Card/CardDialog";
 
 /**
  * @prop  {function} {toggleTheme} toggle theme function
@@ -14,6 +15,8 @@ const MainPage = ({ toggleTheme, login }) => {
 	const [cart, setCart] = useState([]);
 	const [cartDialog, setCartDialog] = useState(false);
 	const [cartSize, setcartSize] = useState(0);
+
+	const [cardDialog, setCardDialog] = useState(false);
 
 	const closeCart = () => {
 		setCartDialog(false);
@@ -27,6 +30,14 @@ const MainPage = ({ toggleTheme, login }) => {
 	const updateCart = () => {
 		let cookie = Cookies.getJSON("User");
 		cookie && setcartSize(cookie.cartSize);
+	};
+
+	const closeCard = () => {
+		setCardDialog(false);
+	};
+
+	const openCard = () => {
+		setCardDialog(true);
 	};
 
 	/**
@@ -74,6 +85,7 @@ const MainPage = ({ toggleTheme, login }) => {
 				changeCategories={changeCategories}
 				openCart={openCart}
 				cartSize={cartSize}
+				openCard={openCard}
 			/>
 			<ProductPage
 				products={products}
@@ -82,6 +94,7 @@ const MainPage = ({ toggleTheme, login }) => {
 				updateCart={updateCart}
 			/>
 			<CartDialog open={cartDialog} closeCart={closeCart} cart={cart} />
+			<CardDialog open={cardDialog} closeCard={closeCard}/>
 		</>
 	);
 };

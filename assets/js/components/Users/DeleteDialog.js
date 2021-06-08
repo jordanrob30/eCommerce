@@ -8,11 +8,17 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import React from "react";
+import Cookies from "js-cookie";
 
 const DeleteDialog = ({ open, close, id, setUserList }) => {
 	const handleSubmit = () => {
 		axios
-			.delete("/api/users/delete/" + id)
+			.delete("/api/users/delete/" + id, {
+				headers: {
+					Authorization: Cookies.getJSON("User").token,
+					"Content-Type": "application/json",
+				},
+			})
 			.then((res) => {
 				setUserList(res.data);
 				handleClose();
