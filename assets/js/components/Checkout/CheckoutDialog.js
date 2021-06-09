@@ -36,6 +36,9 @@ const CheckoutDialog = ({ open, closeDialog }) => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [cart, setCart] = useState([]);
 
+	const [shippingData, setShippingData] = useState({});
+	const [paymentData, setPaymenData] = useState({});
+
 	const onOpen = () => {
 		setCart(Cookies.getJSON("User").cart);
 	};
@@ -58,9 +61,13 @@ const CheckoutDialog = ({ open, closeDialog }) => {
 			case 0:
 				return <Details cart={cart} next={next} cancel={handleClose} />;
 			case 1:
-				return <ShippingForm next={next} back={back} />;
+				return (
+					<ShippingForm next={next} back={back} setFormData={setShippingData} />
+				);
 			case 2:
-				return <PaymentForm next={next} back={back} />;
+				return (
+					<PaymentForm next={next} back={back} setFormData={setPaymenData} />
+				);
 			default:
 				return <Confirmation close={handleClose} />;
 		}

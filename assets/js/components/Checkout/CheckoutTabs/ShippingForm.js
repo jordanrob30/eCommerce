@@ -1,16 +1,78 @@
-import { Box, Button } from "@material-ui/core";
+import { Box, Button, TextField } from "@material-ui/core";
 
-import React from "react";
+import React, { useState } from "react";
 
-const ShippingForm = ({ next, back, form, setForm }) => {
+const ShippingForm = ({ next, back, setFormData }) => {
+	const [shippingData, setShippingData] = useState({
+		Firstname: "",
+		Lastname: "",
+		Address: "",
+		Email: "",
+		City: "",
+		PostalCode: "",
+	});
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		setFormData(shippingData);
+		next(1);
+	};
+
+	const handleChange = (key, value) => {
+		let data = shippingData;
+		data[key] = value;
+		setShippingData(data);
+		console.log(shippingData);
+	};
+
 	return (
 		<div>
-			<form>
+			<form onSubmit={(e) => handleSubmit(e)}>
+				<Box align="center">
+					<TextField
+						required
+						type="text"
+						label="First Name"
+						onChange={(e) => handleChange("Firstname", e.target.value)}
+					/>
+					<TextField
+						required
+						type="text"
+						label="Last name"
+						onChange={(e) => handleChange("Lastname", e.target.value)}
+					/>
+					<TextField
+						required
+						type="email"
+						label="Email"
+						onChange={(e) => handleChange("Email", e.target.value)}
+						fullWidth
+					/>
+					<TextField
+						required
+						type="text"
+						label="Address"
+						onChange={(e) => handleChange("Address", e.target.value)}
+						fullWidth
+					/>
+					<TextField
+						required
+						type="text"
+						label="City"
+						onChange={(e) => handleChange("City", e.target.value)}
+					/>
+					<TextField
+						required
+						type="text"
+						label="Postal code"
+						onChange={(e) => handleChange("PostalCode", e.target.value)}
+					/>
+				</Box>
 				<Box align="right">
 					<Button color="secondary" onClick={() => back(1)}>
 						Back
 					</Button>
-					<Button type="submit" color="primary" onClick={() => next(1)}>
+					<Button type="submit" color="primary">
 						Continue
 					</Button>
 				</Box>
