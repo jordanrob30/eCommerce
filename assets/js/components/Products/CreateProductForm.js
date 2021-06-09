@@ -16,6 +16,7 @@ import React, { useEffect, useState } from "react";
 
 import { Product } from "..";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 /**
  * @param  {props} props props of text field
@@ -119,7 +120,12 @@ const CreateProductForm = ({ categories }) => {
 	 */
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		axios.post("/api/products/create", values).catch((err) => {
+		axios.post("/api/products/create", values,{
+			headers: {
+				Authorization: Cookies.getJSON("User").token,
+				"Content-Type": "application/json",
+			},
+		}).catch((err) => {
 			setError(true);
 			handleClear();
 		});

@@ -12,7 +12,9 @@ import {
 import React, { useState } from "react";
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuDrawer from "./MenuDrawer";
-import { Person, ShoppingCart } from "@material-ui/icons";
+import {Person, ShoppingCart, CreditCard, Web} from "@material-ui/icons";
+import Cookies from "js-cookie";
+import { Link as DomLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -36,6 +38,7 @@ const TaskBar = ({
 	changeCategories,
 	openCart,
 	cartSize,
+	openCard
 }) => {
 	const theme = useTheme();
 	const [openMenu, setOpenMenu] = useState(false);
@@ -66,12 +69,22 @@ const TaskBar = ({
 						Ecommerce
 					</Link>
 					<Box flexGrow={1} />
-					{login.user ? (
-						<IconButton onClick={openCart}>
-							<Badge color="secondary" badgeContent={cartSize}>
-								<ShoppingCart />
-							</Badge>
+					{Cookies.getJSON("User") && Cookies.getJSON("User").roles.indexOf("ROLE_ADMIN") > -1 ? (
+						<IconButton component={DomLink} to="/admin">
+							<Web/>
 						</IconButton>
+					): ""}
+					{login.user ? (
+						<>
+							<IconButton onClick={openCard}>
+								<CreditCard />
+							</IconButton>
+							<IconButton onClick={openCart}>
+								<Badge color="secondary" badgeContent={cartSize}>
+									<ShoppingCart />
+								</Badge>
+							</IconButton>
+						</>
 					) : (
 						<Button
 							size="large"

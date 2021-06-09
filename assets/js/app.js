@@ -50,7 +50,22 @@ const App = () => {
 					"Content-Type": "application/json",
 				},
 			})
-			.then((res) => setUser(res.data[0]));
+			.then((res) => {
+				//console.table(res.data[0]);
+				setUser(res.data[0]);
+
+				Cookies.set(
+					"User",
+					{
+						email: res.data[0]["email"],
+						roles: res.data[0]["roles"],
+						token: token_,
+						cart: [],
+						cartSize: 0,
+					},
+					{ expires: 7 }
+				);
+			});
 	};
 
 	/**
@@ -84,16 +99,6 @@ const App = () => {
 
 		await authUser(credentials).then((token_) => {
 			token_ && getUser(credentials.email, token_);
-			Cookies.set(
-				"User",
-				{
-					email: credentials.email,
-					token: token_,
-					cart: [],
-					cartSize: 0,
-				},
-				{ expires: 7 }
-			);
 			success = true;
 		});
 

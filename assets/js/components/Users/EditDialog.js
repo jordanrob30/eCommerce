@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
@@ -33,7 +34,12 @@ const EditDialog = ({ open, close, values, setValues, setUserList }) => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		axios.put("/api/users/update/" + values.id, values).then((res) => {
+		axios.put("/api/users/update/" + values.id, values, {
+			headers: {
+				Authorization: Cookies.getJSON("User").token,
+				"Content-Type": "application/json",
+			}
+		}).then((res) => {
 			if (res.data.error) {
 				handleError(res.data);
 			} else {

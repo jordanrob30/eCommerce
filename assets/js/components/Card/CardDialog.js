@@ -13,20 +13,6 @@ import {
 } from "@material-ui/core";
 import React from "react";
 
-function ccyFormat(num) {
-    return `${num.toFixed(2)}`;
-}
-
-function priceRow(qty, unit) {
-    return qty * unit;
-}
-
-function subtotal(items) {
-    return items
-        .map(({ qty, unit }) => qty * unit)
-        .reduce((sum, i) => sum + i, 0);
-}
-
 const CardDialog = ({ open, closeCard = [] }) => {
     const Transition = React.forwardRef(function Transition(props, ref) {
         return <Slide direction="up" ref={ref} {...props} />;

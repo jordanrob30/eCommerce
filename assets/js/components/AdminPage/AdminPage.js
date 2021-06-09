@@ -16,6 +16,7 @@ import ProductsDisplay from "../Products/ProductsDisplay";
 import UserDisplay from "../Users/UserDisplay";
 import { Add, People, ShoppingCart } from "@material-ui/icons";
 import Cookies from "js-cookie";
+import {Redirect} from "react-router-dom";
 
 /**
  * Admin Page component
@@ -31,29 +32,37 @@ const AdminPage = ({ login }) => {
 
 	const [tab, setTab] = useState(0);
 
+	const [redirectHome, setRedirectHome] = useState(false);
+
 	/**
 	 * on instantiation of the component current product and category
 	 * arrays are fetched from database and corresponding states are
 	 * updated
 	 */
 	useEffect(() => {
-		axios
-			.get("/api/products/read/all/")
-			.then((res) => setProducts(res.data))
-			.catch((err) => console.error(err));
-		axios
-			.get("/api/category/read/all/")
-			.then((res) => setCategories(res.data))
-			.catch((err) => console.error(err));
-		axios
-			.get("/api/users/read/all/", {
-				headers: {
-					Authorization: Cookies.getJSON("User").token,
-					"Content-Type": "application/json",
-				},
-			})
-			.then((res) => setUserList(res.data))
-			.catch((err) => console.log(err));
+		if(Cookies.getJSON("User").roles.indexOf("ROLE_ADMIN") > -1) {
+			axios
+				.get("/api/products/read/all/")
+				.then((res) => setProducts(res.data))
+				.catch((err) => console.error(err));
+			axios
+				.get("/api/category/read/all/")
+				.then((res) => setCategories(res.data))
+				.catch((err) => console.error(err));
+			axios
+				.get("/api/users/read/all/", {
+					headers: {
+						Authorization: Cookies.getJSON("User").token,
+						"Content-Type": "application/json",
+					},
+				})
+				.then((res) => setUserList(res.data))
+				.catch((err) => console.log(err));
+		}
+		else
+		{
+			setRedirectHome(true);
+		}
 	}, []);
 
 	const deleteUser = (id) => {
@@ -62,7 +71,12 @@ const AdminPage = ({ login }) => {
 	};
 
 	const editUser = async (id) => {
-		const res = await axios.get("/api/users/read/all/id/" + id);
+		const res = await axios.get("/api/users/read/all/id/" + id, {
+			headers: {
+				Authorization: Cookies.getJSON("User").token,
+				"Content-Type": "application/json",
+			}
+		});
 		if (res.data.error) {
 			console.error(res.data);
 		} else {
@@ -94,6 +108,12 @@ const AdminPage = ({ login }) => {
 			contents: <UserDisplay users={users} />,
 		},
 	];
+
+	if (redirectHome) {
+		return (
+			<Redirect to={{pathname : "/home"}}/>
+		)
+	}
 
 	return (
 		<>

@@ -74,4 +74,5 @@ security:
     - { path: ^/api/cards/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/users/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/users/auth/init, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/users/read/all, roles: ROLE_ADMIN }
     - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
