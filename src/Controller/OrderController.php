@@ -79,7 +79,7 @@ class OrderController extends AbstractController
                 ->setUserid($user)
                 ->setNotes($data['notes'])
                 ->setOrderType("Normal")
-                ->setStatus($data['status'])
+                ->setStatus("Open")
                 ->setExternalOrderId("placeholder")
                 ->setCreatedtime(new \DateTime())
                 ->setUserAddressId($userAddress)
@@ -92,12 +92,12 @@ class OrderController extends AbstractController
             $productsData = $data["products"];
             foreach($productsData as $productData) {
                 // get product if not object
-                if(is_numeric($productData['product']))
+                if(is_numeric($productData["id"]))
                 {
-                    $product = $this->productRepository->find($productData["product"]);
+                    $product = $this->productRepository->find($productData["id"]);
                 }
                 else{
-                    $product = $productData["product"];
+                    $product = $productData;
                 }
 
                 $totalPrice += $product->getSellprice() * intval($productData["qty"]);
@@ -130,6 +130,7 @@ class OrderController extends AbstractController
             ]);
 
             $order->setExternalOrderId($charge->id);
+            $order->setStatus("Paid");
             $this->orderRepository->saveOrder($order);
 
             return $this->readOrders();
@@ -148,12 +149,32 @@ class OrderController extends AbstractController
         $data = [];
 
         foreach($orders as $order){
+
+            //build the products output
+            $prod_arr = [];
+            foreach($order->getOrderProducts() as $orderProduct)
+            {
+                $orderProduct_Product = $orderProduct->getProductid();
+                $prod_arr[] = [
+                    'id' => $orderProduct_Product->getId(),
+                    'name' => $orderProduct_Product->getName(),
+                    'description' => $orderProduct_Product->getDescription(),
+                    'buyPrice' => $orderProduct_Product->getBuyprice(),
+                    'sellPrice' => $orderProduct_Product->getSellprice(),
+                    'category' => $orderProduct_Product->getCategory(),
+                    'tags' => $orderProduct_Product->getTags(),
+                    'stock' => $orderProduct_Product->getStock(),
+                    'imageSource' => $orderProduct_Product->getImagesource()
+                ];
+            }
+
             $data[] = [
                 'id' => $order->getId(),
                 'notes' => $order->getNotes(),
                 'type' => $order->getOrderType(),
                 'status' => $order->getStatus(),
-                'user' => $order->getUserid()
+                'user' => $order->getUserid(),
+                'products' => $prod_arr
             ];
         }
 
@@ -213,13 +234,12 @@ class OrderController extends AbstractController
     {
         $order = $this->orderRepository->findOneBy(['id' => $id]);
 
-        $data = json_decode($request->getContent(), true)['data'];
+        $data = json_decode($request->getContent(), true);
 
         try {
             !empty($data['notes']) ? $order->setNotes($data['notes']) : null;
             !empty($data['type']) ? $order->setOrderType($data['type']) : null;
             !empty($data['status']) ? $order->setStatus($data['status']) : null;
-            !empty($data['user']) ? $order->setUserid($data['user']): null;
 
             $order->setModifiedtime(new \DateTime());
             $this->orderRepository->updateOrder($order);

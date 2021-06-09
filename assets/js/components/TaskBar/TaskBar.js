@@ -12,7 +12,7 @@ import {
 import React, { useState } from "react";
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuDrawer from "./MenuDrawer";
-import {Person, ShoppingCart, CreditCard, Web} from "@material-ui/icons";
+import {Person, ShoppingCart, CreditCard, Web, ExitToApp} from "@material-ui/icons";
 import Cookies from "js-cookie";
 import { Link as DomLink } from 'react-router-dom'
 
@@ -83,6 +83,9 @@ const TaskBar = ({
 								<Badge color="secondary" badgeContent={cartSize}>
 									<ShoppingCart />
 								</Badge>
+							</IconButton>
+							<IconButton onClick={login.logout}>
+								<ExitToApp />
 							</IconButton>
 						</>
 					) : (

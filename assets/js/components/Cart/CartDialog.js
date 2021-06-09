@@ -12,6 +12,8 @@ import {
 	Button,
 } from "@material-ui/core";
 import React from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 function ccyFormat(num) {
 	return `${num.toFixed(2)}`;
@@ -33,6 +35,40 @@ const CartDialog = ({ open, closeCart, cart = [] }) => {
 	});
 
 	const handleClose = () => closeCart();
+
+
+	const handlePayment = () => {
+		//build the data
+
+		let data;
+		data = {
+			user : 3,
+			userAddress: 1,
+			notes: "Order with " + cart.length + " products",
+			products: []
+		};
+
+		cart.map((row) => {
+			data.products.push({id: row.id, qty: row.qty});
+		});
+
+		console.log(data)
+
+		if(Cookies.getJSON("User")) {
+			axios.post('/api/orders/create', data, {
+				headers: {
+					Authorization: Cookies.getJSON("User").token,
+					"Content-Type": "application/json",
+				}
+			}).then((res) => {
+				if (res.data.error) {
+
+				} else {
+					console.log(res);
+				}
+			});
+		}
+	};
 
 	return (
 		<Dialog open={open} onClose={handleClose}>
@@ -75,8 +111,8 @@ const CartDialog = ({ open, closeCart, cart = [] }) => {
 				<Button onClick={handleClose} color="secondary">
 					Close
 				</Button>
-				<Button onClick={() => {}} color="primary" disabled={false}>
-					Checkout
+				<Button onClick={handlePayment} color="primary" disabled={false}>
+					Instant Pay
 				</Button>
 			</DialogActions>
 		</Dialog>

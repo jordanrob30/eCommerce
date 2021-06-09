@@ -14,9 +14,11 @@ import { AdminTaskBar, EditDialog, DeleteDialog } from "..";
 import { CreateProductForm } from "..";
 import ProductsDisplay from "../Products/ProductsDisplay";
 import UserDisplay from "../Users/UserDisplay";
-import { Add, People, ShoppingCart } from "@material-ui/icons";
+import {Add, People, ShoppingBasket, ShoppingCart} from "@material-ui/icons";
 import Cookies from "js-cookie";
 import {Redirect} from "react-router-dom";
+import OrderDisplay from "../Orders/OrderDisplay";
+import EditOrderDialog from "../Orders/EditOrderDialog";
 
 /**
  * Admin Page component
@@ -29,6 +31,9 @@ const AdminPage = ({ login }) => {
 	const [deleteDialog, setDeleteDialog] = useState(false);
 	const [values, setValues] = useState({});
 	const [id, setId] = useState(null);
+	const [orderList, setOrderList] = useState([]);
+	const [orderValues, setOrderValues] = useState({});
+	const [orderEditDialog, setOrderEditDialog] = useState(false);
 
 	const [tab, setTab] = useState(0);
 
@@ -40,7 +45,7 @@ const AdminPage = ({ login }) => {
 	 * updated
 	 */
 	useEffect(() => {
-		if(Cookies.getJSON("User").roles.indexOf("ROLE_ADMIN") > -1) {
+		if(Cookies.getJSON("User") && Cookies.getJSON("User").roles.indexOf("ROLE_ADMIN") > -1) {
 			axios
 				.get("/api/products/read/all/")
 				.then((res) => setProducts(res.data))
@@ -57,6 +62,15 @@ const AdminPage = ({ login }) => {
 					},
 				})
 				.then((res) => setUserList(res.data))
+				.catch((err) => console.log(err));
+			axios
+				.get("/api/orders/read/all/", {
+					headers: {
+						Authorization: Cookies.getJSON("User").token,
+						"Content-Type": "application/json",
+					},
+				})
+				.then((res) => setOrderList(res.data))
 				.catch((err) => console.log(err));
 		}
 		else
@@ -85,10 +99,30 @@ const AdminPage = ({ login }) => {
 		}
 	};
 
+	const editOrder = async (id) => {
+		const res = await axios.get("/api/orders/read/all/id/" + id, {
+			headers: {
+				Authorization: Cookies.getJSON("User").token,
+				"Content-Type": "application/json",
+			}
+		});
+		if (res.data.error) {
+			console.error(res.data);
+		} else {
+			setOrderValues(res.data[0]);
+			setOrderEditDialog(true);
+		}
+	};
+
 	const users = {
 		users: userList,
 		del: deleteUser,
 		edit: editUser,
+	};
+
+	const orders = {
+		orders: orderList,
+		edit: editOrder,
 	};
 
 	const tabs = [
@@ -106,6 +140,11 @@ const AdminPage = ({ login }) => {
 			title: "Users",
 			icon: <People />,
 			contents: <UserDisplay users={users} />,
+		},
+		{
+			title: "Orders",
+			icon: <ShoppingBasket/>,
+			contents: <OrderDisplay orders={orders} />,
 		},
 	];
 
@@ -157,6 +196,14 @@ const AdminPage = ({ login }) => {
 				close={() => setDeleteDialog(false)}
 				id={id}
 				setUserList={setUserList}
+			/>
+
+			<EditOrderDialog
+				open={orderEditDialog}
+				close={setOrderEditDialog}
+				orderValues={orderValues}
+				setOrderValues={setOrderValues}
+				setOrderList={setOrderList}
 			/>
 		</>
 	);

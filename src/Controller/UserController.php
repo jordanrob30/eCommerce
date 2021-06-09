@@ -47,6 +47,12 @@ class UserController extends AbstractController
                     "name" => $data["firstname"] . " " . $data["lastname"]
                 ]);
 
+                //add a default card as this is a test system
+                $this->stripe->customers->createSource(
+                    $customer->id,
+                    ['source' => 'tok_visa']
+                );
+
                 $user = new User;
                 $user
                     ->setEmail($data['email'])
