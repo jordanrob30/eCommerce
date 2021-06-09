@@ -34,12 +34,14 @@ const ShippingForm = ({ next, back, setFormData }) => {
 						type="text"
 						label="First Name"
 						onChange={(e) => handleChange("Firstname", e.target.value)}
+						fullWidth
 					/>
 					<TextField
 						required
 						type="text"
 						label="Last name"
 						onChange={(e) => handleChange("Lastname", e.target.value)}
+						fullWidth
 					/>
 					<TextField
 						required
@@ -60,12 +62,14 @@ const ShippingForm = ({ next, back, setFormData }) => {
 						type="text"
 						label="City"
 						onChange={(e) => handleChange("City", e.target.value)}
+						fullWidth
 					/>
 					<TextField
 						required
 						type="text"
 						label="Postal code"
 						onChange={(e) => handleChange("PostalCode", e.target.value)}
+						fullWidth
 					/>
 				</Box>
 				<Box align="right">
