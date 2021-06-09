@@ -67,12 +67,14 @@ const MenuDrawer = ({
 				Actions
 			</Typography>
 			<List className={classes.list}>
-				{actions(login.user ? login.user : null).map((action, index) => (
-					<ListItem button key={index} onClick={action.action}>
-						<ListItemIcon>{action.icon}</ListItemIcon>
-						<ListItemText primary={action.title} />
-					</ListItem>
-				))}
+				{actions(login.user ? login.user : null, toggleTheme).map(
+					(action, index) => (
+						<ListItem button key={index} onClick={action.action}>
+							<ListItemIcon>{action.icon}</ListItemIcon>
+							<ListItemText primary={action.title} />
+						</ListItem>
+					)
+				)}
 			</List>
 
 			<Divider />
