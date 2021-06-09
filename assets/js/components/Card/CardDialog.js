@@ -1,48 +1,49 @@
 import {
-    Dialog,
-    Slide,
-    Table,
-    TableCell,
-    TableHead,
-    TableRow,
-    TableBody,
-    Typography,
-    DialogActions,
-    DialogContent,
-    Button, Card, CardActions, CardContent, Box,
+	Dialog,
+	Slide,
+	DialogActions,
+	DialogContent,
+	Button,
+	Box,
+	Grid,
 } from "@material-ui/core";
 import React from "react";
+import CardDisplay from "./CardDisplay";
 
-const CardDialog = ({ open, closeCard = [] }) => {
-    const Transition = React.forwardRef(function Transition(props, ref) {
-        return <Slide direction="up" ref={ref} {...props} />;
-    });
+const cards = [
+	{ name: "test card", number: { public: "**** **** **** 4242" } },
+];
 
-    const handleClose = () => closeCard();
+const CardDialog = ({ open, closeCard }) => {
+	const Transition = React.forwardRef(function Transition(props, ref) {
+		return <Slide direction="up" ref={ref} {...props} />;
+	});
 
-    return (
-        <Dialog open={open} onClose={handleClose}>
-            <DialogContent>
-                <Box display="inline-block">
-                    <Card>
-                        <CardContent>
-                            <Typography color="textSecondary">
-                                EXAMPLE CARD
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button size="small">**** **** **** 4242</Button>
-                        </CardActions>
-                    </Card>
-                </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose} color="secondary">
-                    Close
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
+	const handleClose = () => closeCard();
+
+	return (
+		<Dialog open={open} onClose={handleClose}>
+			<DialogContent>
+				<Box display="inline-block">
+					<Grid container justify="center">
+						{cards.map((card) => (
+							<Grid item xs={12} key={card.name}>
+								<CardDisplay card={card} />
+							</Grid>
+						))}
+					</Grid>
+				</Box>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={handleClose} color="secondary">
+					Close
+				</Button>
+				<Button onClick={handleClose} color="primary">
+					Add Card
+				</Button>
+			</DialogActions>
+		</Dialog>
+	);
 };
 
 export default CardDialog;
