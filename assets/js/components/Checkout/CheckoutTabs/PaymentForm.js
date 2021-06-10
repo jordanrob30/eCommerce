@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 import {
 	Elements,
 	ElementsConsumer,
@@ -8,13 +8,28 @@ import { loadStripe } from "@stripe/stripe-js";
 import Cookies from "js-cookie";
 import React from "react";
 
-const PaymentForm = ({ next, back }) => {
+const buildOrder = () => {
+	let order = { userId: -1, products: [], totalItems: 0, totalCost: 0.0 };
+	let user = Cookies.getJSON("User");
+	let cart = user.cart;
+
+	order.userId = user.id;
+	order.products = cart;
+
+	cart.map((item) => {
+		order.totalItems += item.qty;
+		order.totalCost += item.qty * item.unit;
+	});
+
+	return order;
+};
+
+const PaymentForm = ({ next, back, shippingData, setOrderData, setError }) => {
 	const stripePromise = loadStripe(
 		"pk_test_51IikwiLNjhQ7s6Ra7wGuKzcaNgRvXIBGTXX3NRaYv4Cv8AspnKMR5q2VEv2Kv0PCv6S5fvlclvnWLLxE4dO8PnV100Bi2nXJ5s"
 	);
 
-	const cart = Cookies.getJSON("User").cart;
-	const total = cart;
+	const order = buildOrder();
 
 	const handleSubmit = async (event, elements, stripe) => {
 		event.preventDefault();
@@ -29,11 +44,14 @@ const PaymentForm = ({ next, back }) => {
 		});
 
 		if (error) {
-			console.log("[error]", error);
+			setError(error);
 		} else {
-			const orderData = cart;
-
-			console.log(orderData);
+			const orderData = {
+				...order,
+				paymentMethod: paymentMethod,
+				shippingData: shippingData,
+			};
+			setOrderData(orderData);
 
 			next(2);
 		}
@@ -45,21 +63,37 @@ const PaymentForm = ({ next, back }) => {
 				<ElementsConsumer>
 					{({ elements, stripe }) => (
 						<form onSubmit={(e) => handleSubmit(e, elements, stripe)}>
-							<CardElement />
+							<CardElement
+								options={{
+									style: {
+										base: {
+											iconColor: "#c4f0ff",
+											color: "#fff",
+											fontWeight: "500",
+											fontFamily: "Roboto, Open Sans, Segoe UI, sans-serif",
+											fontSize: "16px",
+											fontSmoothing: "antialiased",
+											":-webkit-autofill": {
+												color: "#fce883",
+											},
+											"::placeholder": {
+												color: "#87BBFD",
+											},
+										},
+										invalid: {
+											iconColor: "#FFC7EE",
+											color: "#FFC7EE",
+										},
+									},
+								}}
+							/>
 							<br /> <br />
-							<div style={{ display: "flex", justifyContent: "space-between" }}>
-								<Button variant="outlined" onClick={() => back(2)}>
-									Back
+							<Box align="right" marginTop={2}>
+								<Button onClick={() => back(2)}>Back</Button>
+								<Button type="submit" disabled={!stripe} color="primary">
+									Pay £{order.totalCost}
 								</Button>
-								<Button
-									type="submit"
-									variant="contained"
-									disabled={!stripe}
-									color="primary"
-								>
-									Pay
-								</Button>
-							</div>
+							</Box>
 						</form>
 					)}
 				</ElementsConsumer>

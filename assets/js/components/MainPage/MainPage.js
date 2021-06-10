@@ -15,7 +15,6 @@ const MainPage = ({ toggleTheme, login }) => {
 	const [cart, setCart] = useState([]);
 	const [cartDialog, setCartDialog] = useState(false);
 	const [cartSize, setcartSize] = useState(0);
-	const [cardDialog, setCardDialog] = useState(false);
 	const [checkoutDialog, setCheckoutDialog] = useState(false);
 
 	const closeCart = () => {
@@ -93,7 +92,6 @@ const MainPage = ({ toggleTheme, login }) => {
 				changeCategories={changeCategories}
 				openCart={openCart}
 				cartSize={cartSize}
-				openCard={openCard}
 			/>
 			<ProductPage
 				products={products}
@@ -107,7 +105,6 @@ const MainPage = ({ toggleTheme, login }) => {
 				cart={cart}
 				openCheckout={openCheckout}
 			/>
-			<CardDialog open={cardDialog} closeCard={closeCard} />
 			<CheckoutDialog open={checkoutDialog} closeDialog={closeCheckout} />
 		</>
 	);

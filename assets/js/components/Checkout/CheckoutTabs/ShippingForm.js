@@ -22,7 +22,6 @@ const ShippingForm = ({ next, back, setFormData }) => {
 		let data = shippingData;
 		data[key] = value;
 		setShippingData(data);
-		console.log(shippingData);
 	};
 
 	return (
