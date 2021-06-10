@@ -1,12 +1,14 @@
 import { Box, Button, TextField } from "@material-ui/core";
+import Cookies from "js-cookie";
 
 import React, { useState } from "react";
 
 const ShippingForm = ({ next, back, setFormData }) => {
 	const [shippingData, setShippingData] = useState({
+		userId: Cookies.getJSON("User").id,
 		Firstname: "",
 		Lastname: "",
-		Address: "",
+		Address1: "",
 		Address2: "",
 		City: "",
 		Country: "",

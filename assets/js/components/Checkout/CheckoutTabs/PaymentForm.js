@@ -5,26 +5,8 @@ import {
 	CardElement,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import Cookies from "js-cookie";
 import React from "react";
-
-const buildOrder = () => {
-	let order = { userId: -1, products: [], totalItems: 0, totalCost: 0.0 };
-	let user = Cookies.getJSON("User");
-	let cart = user.cart;
-
-	order.userId = user.id;
-	order.products = cart;
-
-	cart.map((item) => {
-		order.totalItems += item.qty;
-		order.totalCost += item.qty * item.unit;
-	});
-
-	order.totalCost = order.totalCost.toFixed(2);
-
-	return order;
-};
+import { buildOrder, sendOrder } from "./Order";
 
 const PaymentForm = ({ next, back, shippingData, setOrderData, setError }) => {
 	const stripePromise = loadStripe(
@@ -54,6 +36,7 @@ const PaymentForm = ({ next, back, shippingData, setOrderData, setError }) => {
 				shippingData: shippingData,
 			};
 			setOrderData(orderData);
+			await sendOrder(orderData);
 
 			next(2);
 		}

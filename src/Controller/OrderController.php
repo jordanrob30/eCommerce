@@ -10,7 +10,6 @@ use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
-use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,18 +25,12 @@ class OrderController extends AbstractController
     private $orderRepository;
     private $userRepository;
     private $userAddressRepository;
-    private $orderProductRepository;
-    private $productRepository;
-    private $stripe;
 
     public function __construct(OrderRepository $orderRepository, UserRepository $userRepository, UserAddressRepository $userAddressRepository, OrderProductRepository $orderProductRepository, ProductRepository $productRepository)
     {
         $this->orderRepository = $orderRepository;
         $this->userRepository = $userRepository;
         $this->userAddressRepository = $userAddressRepository;
-        $this->orderProductRepository = $orderProductRepository;
-        $this->productRepository = $productRepository;
-        $this->stripe = new StripeClient($_ENV["STRIPE_API_KEY"]);
     }
 
     /**
@@ -46,86 +39,24 @@ class OrderController extends AbstractController
     public function createOrder(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        $errors = [];
 
         try {
-            $user = $this->userRepository->find($this->getUser()->getId());
-
-            //use the first address found (for now, this can be changed to use multiple)
-            $userAddress = null;
-            foreach($this->getUser()->getUserAddresses() as $userAddress)
-            {
-                break;
-            }
-
-            if (sizeof($data["products"]) == 0) {
-                $errors[] = "Empty cart";
-                return new JsonResponse(["errors"=>$errors], 200);
-            }
+            $user = $this->userRepository->find($data['userId']);
+            $userAddress = $this->userAddressRepository->find($data['id']);
 
             // Create new order
             $order = new Order();
             $order
                 ->setUserid($user)
-                ->setNotes($data['notes'])
                 ->setOrderType("Normal")
                 ->setStatus("Open")
                 ->setExternalOrderId("placeholder")
                 ->setCreatedtime(new \DateTime())
                 ->setUserAddressId($userAddress)
                 ->setModifiedtime(new \DateTime());
-            $this->orderRepository->saveOrder($order);
 
-            $totalPrice = 0;
-
-            // Create OrderProduct objects from data
-            $productsData = $data["products"];
-            foreach($productsData as $productData) {
-                // get product if not object
-                if(is_numeric($productData["id"]))
-                {
-                    $product = $this->productRepository->find($productData["id"]);
-                }
-                else{
-                    $product = $productData;
-                }
-
-                $totalPrice += $product->getSellprice() * intval($productData["qty"]);
-
-                $orderProduct = new OrderProduct();
-                $orderProduct
-                    ->setOrderid($order)
-                    ->setDiscountValue(0)
-                    ->setProductid($product)
-                    ->setQty($productData["qty"]);
-                $this->orderProductRepository->saveOrderProduct($orderProduct);
-            }
-
-            $customerID = $user->getExternalStripeId();
-
-            $charge = $this->stripe->charges->create([
-                "amount" => $totalPrice*100,
-                "currency" => "gbp",
-                "customer" => $customerID,
-                "shipping" => [
-                    "name" => $user->getFirstname()." ".$user->getLastname(),
-                    "address" => [
-                        "line1" => $userAddress->getLine1(),
-                        "line2" => $userAddress->getLine2(),
-                        "city" => $userAddress->getCity(),
-                        "postal_code" => $userAddress->getPostcode(),
-                        "country" => $userAddress->getCountry()
-                    ]
-                ]
-            ]);
-
-            $order->setExternalOrderId($charge->id);
-            $order->setStatus("Paid");
-            $this->orderRepository->saveOrder($order);
-
-            return $this->readOrders();
-
-        }catch (\Throwable $th) {
+            return new JsonResponse($this->orderRepository->saveOrder($order));
+        } catch (\Throwable $th) {
             return new JsonResponse($th);
         }
     }
@@ -138,12 +69,11 @@ class OrderController extends AbstractController
         $orders = $this->orderRepository->findAll();
         $data = [];
 
-        foreach($orders as $order){
+        foreach ($orders as $order) {
 
             //build the products output
             $prod_arr = [];
-            foreach($order->getOrderProducts() as $orderProduct)
-            {
+            foreach ($order->getOrderProducts() as $orderProduct) {
                 $orderProduct_Product = $orderProduct->getProductid();
                 $prod_arr[] = [
                     'id' => $orderProduct_Product->getId(),
@@ -177,11 +107,11 @@ class OrderController extends AbstractController
     public function readOrdersByField($field, $search): JsonResponse
     {
 
-        try{
+        try {
             $orders = $this->orderRepository->findBy([$field => $search]);
             $data  = [];
 
-            foreach($orders as $order){
+            foreach ($orders as $order) {
                 $data[] = [
                     'id' => $order->getId(),
                     'notes' => $order->getNotes(),
@@ -192,7 +122,7 @@ class OrderController extends AbstractController
             }
 
             return new JsonResponse($data);
-        }catch (\Throwable $th){
+        } catch (\Throwable $th) {
             return new JsonResponse([]);
         }
     }
@@ -235,7 +165,7 @@ class OrderController extends AbstractController
             $this->orderRepository->updateOrder($order);
 
             return $this->readOrders();
-        } catch (\Throwable $th){
+        } catch (\Throwable $th) {
             return new JsonResponse($th);
         }
     }
