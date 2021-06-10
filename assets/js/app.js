@@ -43,7 +43,7 @@ const App = () => {
 		}
 	}
 
-	const getUser = async (email, token_) => {
+	const getUserInit = async (email, token_) => {
 		await axios
 			.get("/api/users/read/all/email/" + email, {
 				headers: {
@@ -58,6 +58,7 @@ const App = () => {
 				Cookies.set(
 					"User",
 					{
+						id: res.data[0]["id"],
 						email: res.data[0]["email"],
 						roles: res.data[0]["roles"],
 						token: token_,
@@ -66,6 +67,20 @@ const App = () => {
 					},
 					{ expires: 7 }
 				);
+			});
+	};
+
+	const getUser = async (email, token_) => {
+		await axios
+			.get("/api/users/read/all/email/" + email, {
+				headers: {
+					Authorization: token_,
+					"Content-Type": "application/json",
+				},
+			})
+			.then((res) => {
+				//console.table(res.data[0]);
+				setUser(res.data[0]);
 			});
 	};
 
@@ -99,7 +114,7 @@ const App = () => {
 		let success = false;
 
 		await authUser(credentials).then((token_) => {
-			token_ && getUser(credentials.email, token_);
+			token_ && getUserInit(credentials.email, token_);
 			success = true;
 		});
 

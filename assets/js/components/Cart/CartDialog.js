@@ -29,44 +29,32 @@ function subtotal(items) {
 		.reduce((sum, i) => sum + i, 0);
 }
 
-const CartDialog = ({ open, closeCart, cart = [] }) => {
+const CartDialog = ({ open, closeCart, cart = [], openCheckout }) => {
 	const Transition = React.forwardRef(function Transition(props, ref) {
 		return <Slide direction="up" ref={ref} {...props} />;
 	});
 
 	const handleClose = () => closeCart();
 
+	const handleCheckout = () => openCheckout();
 
 	const handlePayment = () => {
 		//build the data
 
-		let data;
-		data = {
-			user : 3,
-			userAddress: 1,
-			notes: "Order with " + cart.length + " products",
-			products: []
-		};
-
-		cart.map((row) => {
-			data.products.push({id: row.id, qty: row.qty});
-		});
-
-		console.log(data)
-
-		if(Cookies.getJSON("User")) {
-			axios.post('/api/orders/create', data, {
-				headers: {
-					Authorization: Cookies.getJSON("User").token,
-					"Content-Type": "application/json",
-				}
-			}).then((res) => {
-				if (res.data.error) {
-
-				} else {
-					console.log(res);
-				}
-			});
+		if (Cookies.getJSON("User")) {
+			axios
+				.post("/api/orders/create", data, {
+					headers: {
+						Authorization: Cookies.getJSON("User").token,
+						"Content-Type": "application/json",
+					},
+				})
+				.then((res) => {
+					if (res.data.error) {
+					} else {
+						console.log(res);
+					}
+				});
 		}
 	};
 
@@ -111,8 +99,8 @@ const CartDialog = ({ open, closeCart, cart = [] }) => {
 				<Button onClick={handleClose} color="secondary">
 					Close
 				</Button>
-				<Button onClick={handlePayment} color="primary" disabled={false}>
-					Instant Pay
+				<Button onClick={handleCheckout} color="primary" disabled={false}>
+					Checkout
 				</Button>
 			</DialogActions>
 		</Dialog>

@@ -12,3 +12,4 @@ export { default as User } from "./Users/User";
 export { default as EditDialog } from "./Users/EditDialog";
 export { default as DeleteDialog } from "./Users/DeleteDialog";
 export { default as CartDialog } from "./Cart/CartDialog";
+export { default as CheckoutDialog } from "./Checkout/CheckoutDialog";

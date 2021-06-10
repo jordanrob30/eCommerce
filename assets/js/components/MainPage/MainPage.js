@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ProductPage, TaskBar } from "../";
+import { CheckoutDialog, ProductPage, TaskBar } from "../";
 import axios from "axios";
 import CartDialog from "../Cart/CartDialog";
 import Cookies from "js-cookie";
@@ -16,8 +16,7 @@ const MainPage = ({ toggleTheme, login }) => {
 	const [cart, setCart] = useState([]);
 	const [cartDialog, setCartDialog] = useState(false);
 	const [cartSize, setcartSize] = useState(0);
-
-	const [cardDialog, setCardDialog] = useState(false);
+	const [checkoutDialog, setCheckoutDialog] = useState(false);
 	const [accountDialog, setAccountDialog] = useState(false);
 	const [accountValues, setAccountValues] = useState(false);
 
@@ -41,6 +40,14 @@ const MainPage = ({ toggleTheme, login }) => {
 
 	const openCard = () => {
 		setCardDialog(true);
+	};
+
+	const closeCheckout = () => {
+		setCheckoutDialog(false);
+	};
+
+	const openCheckout = () => {
+		setCheckoutDialog(true);
 	};
 
 	const closeAccount = () => {
@@ -108,7 +115,6 @@ const MainPage = ({ toggleTheme, login }) => {
 				changeCategories={changeCategories}
 				openCart={openCart}
 				cartSize={cartSize}
-				openCard={openCard}
 				openAccount={openAccount}
 			/>
 			<ProductPage
@@ -117,9 +123,15 @@ const MainPage = ({ toggleTheme, login }) => {
 				login={login}
 				updateCart={updateCart}
 			/>
-			<CartDialog open={cartDialog} closeCart={closeCart} cart={cart} />
-			<CardDialog open={cardDialog} closeCard={closeCard}/>
+			<CartDialog
+				open={cartDialog}
+				closeCart={closeCart}
+				cart={cart}
+				openCheckout={openCheckout}
+			/>
+			<CheckoutDialog open={checkoutDialog} closeDialog={closeCheckout} />
 			<AccountDialog open={accountDialog} closeAccount={closeAccount} values={accountValues} setValues={setAccountValues}/>
+
 		</>
 	);
 };
