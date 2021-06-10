@@ -72,7 +72,7 @@ const ShippingForm = ({ next, back, setFormData }) => {
 						fullWidth
 					/>
 				</Box>
-				<Box align="right">
+				<Box align="right" marginTop={2}>
 					<Button color="secondary" onClick={() => back(1)}>
 						Back
 					</Button>

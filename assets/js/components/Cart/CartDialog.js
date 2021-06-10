@@ -41,20 +41,6 @@ const CartDialog = ({ open, closeCart, cart = [], openCheckout }) => {
 	const handlePayment = () => {
 		//build the data
 
-		let data;
-		data = {
-			user: 3,
-			userAddress: 1,
-			notes: "Order with " + cart.length + " products",
-			products: [],
-		};
-
-		cart.map((row) => {
-			data.products.push({ id: row.id, qty: row.qty });
-		});
-
-		console.log(data);
-
 		if (Cookies.getJSON("User")) {
 			axios
 				.post("/api/orders/create", data, {

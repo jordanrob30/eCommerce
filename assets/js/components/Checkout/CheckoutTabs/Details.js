@@ -56,7 +56,7 @@ const Details = ({ cart, next, cancel }) => {
 					</TableRow>
 				</TableBody>
 			</Table>
-			<Box align="right">
+			<Box align="right" marginTop={2}>
 				<Button color="secondary" onClick={cancel}>
 					Cancel
 				</Button>
