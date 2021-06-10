@@ -58,7 +58,6 @@ const MainPage = ({ toggleTheme, login }) => {
 		setAccountDialog(true);
 	};
 
-
 	/**
 	 * on instantiation of the component current product and category
 	 * arrays are fetched from database and corresponding states are
@@ -75,16 +74,16 @@ const MainPage = ({ toggleTheme, login }) => {
 			.then((res) => setCategories(res.data))
 			.catch((err) => console.error(err));
 
-		axios
-			.get("/api/users/read/all/me", {
-				headers: {
-					Authorization: Cookies.getJSON("User").token,
-					"Content-Type": "application/json",
-				},
-			})
-			.then((res) => setAccountValues(res.data))
-			.catch((err) => console.log(err));
-
+		Cookies.getJSON("User") &&
+			axios
+				.get("/api/users/read/all/me", {
+					headers: {
+						Authorization: Cookies.getJSON("User").token,
+						"Content-Type": "application/json",
+					},
+				})
+				.then((res) => setAccountValues(res.data))
+				.catch((err) => console.log(err));
 	}, []);
 
 	/**
@@ -130,8 +129,12 @@ const MainPage = ({ toggleTheme, login }) => {
 				openCheckout={openCheckout}
 			/>
 			<CheckoutDialog open={checkoutDialog} closeDialog={closeCheckout} />
-			<AccountDialog open={accountDialog} closeAccount={closeAccount} values={accountValues} setValues={setAccountValues}/>
-
+			<AccountDialog
+				open={accountDialog}
+				closeAccount={closeAccount}
+				values={accountValues}
+				setValues={setAccountValues}
+			/>
 		</>
 	);
 };
