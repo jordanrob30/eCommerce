@@ -21,6 +21,8 @@ const buildOrder = () => {
 		order.totalCost += item.qty * item.unit;
 	});
 
+	order.totalCost = order.totalCost.toFixed(2);
+
 	return order;
 };
 

@@ -272,7 +272,7 @@ class UserController extends AbstractController
             'id' => $user->getId(),
             'firstname' => $user->getFirstname(),
             'lastname' => $user->getLastname(),
-            'line1' => 'test'
+            'email' => $user->getEmail(),
         ];
 
         return new JsonResponse($data);
