@@ -32,11 +32,9 @@ class UserAddressController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if(is_numeric($data['user']))
-        {
-            $user = $this->userRepository->find($data["user"]);
-        }
-        else{
+        if (is_numeric($data['userId'])) {
+            $user = $this->userRepository->find($data["userId"]);
+        } else {
             $user = $data["user"];
         }
 
@@ -44,18 +42,16 @@ class UserAddressController extends AbstractController
             $userAddress = new UserAddress();
             $userAddress
                 ->setUserid($user)
-                ->setLine1($data['line_1'])
-                ->setLine2($data['line_2'])
-                ->setCity($data['city'])
-                ->setPostcode($data['postcode'])
-                ->setCountry($data['country']);
+                ->setLine1($data['Address1'])
+                ->setLine2($data['Address2'])
+                ->setCity($data['City'])
+                ->setPostcode($data['PostalCode'])
+                ->setCountry($data['Country']);
 
-            $this->userAddressRepository->saveUserAddress($userAddress);
-            return $this->readUserAddresses();
-        }catch (\Throwable $th) {
+            return new JsonResponse($this->userAddressRepository->saveUserAddress($userAddress));
+        } catch (\Throwable $th) {
             return new JsonResponse($th);
         }
-
     }
 
     /**
@@ -66,7 +62,7 @@ class UserAddressController extends AbstractController
         $userAddresses = $this->userAddressRepository->findAll();
         $data = [];
 
-        foreach($userAddresses as $userAddress){
+        foreach ($userAddresses as $userAddress) {
             $data[] = [
                 'id' => $userAddress->getId(),
                 'line_1' => $userAddress->getLine1(),
@@ -86,11 +82,11 @@ class UserAddressController extends AbstractController
     public function readUserAddressesByField($field, $search): JsonResponse
     {
 
-        try{
+        try {
             $userAddresses = $this->userAddressRepository->findBy([$field => $search]);
             $data = [];
 
-            foreach($userAddresses as $userAddress){
+            foreach ($userAddresses as $userAddress) {
                 $data[] = [
                     'id' => $userAddress->getId(),
                     'line_1' => $userAddress->getLine1(),
@@ -101,10 +97,9 @@ class UserAddressController extends AbstractController
                 ];
             }
             return new JsonResponse($data);
-        }catch (\Throwable $th){
+        } catch (\Throwable $th) {
             return new JsonResponse([]);
         }
-
     }
 
     /**
@@ -145,10 +140,9 @@ class UserAddressController extends AbstractController
 
             $this->userAddressRepository->updateUserAddress($userAddress);
             return $this->readUserAddresses();
-        } catch (\Throwable $th){
+        } catch (\Throwable $th) {
             return new JsonResponse($th);
         }
-
     }
 
     /**
@@ -195,5 +189,4 @@ class UserAddressController extends AbstractController
 
         return $this->readUserAddresses();
     }
-
 }

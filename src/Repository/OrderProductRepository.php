@@ -28,9 +28,10 @@ class OrderProductRepository extends ServiceEntityRepository
     {
         $this->entityManager->persist($orderProduct);
         $this->entityManager->flush();
+        return $orderProduct->getId();
     }
 
-    public function updateOrderProduct(OrderProduct $orderProduct) : OrderProduct
+    public function updateOrderProduct(OrderProduct $orderProduct): OrderProduct
     {
         $this->entityManager->persist($orderProduct);
         $this->entityManager->flush();
@@ -43,5 +44,4 @@ class OrderProductRepository extends ServiceEntityRepository
         $this->entityManager->remove($orderProduct);
         $this->entityManager->flush();
     }
-
 }

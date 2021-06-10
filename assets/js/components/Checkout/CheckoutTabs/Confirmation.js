@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from "@material-ui/core";
+import Cookies from "js-cookie";
 import React from "react";
 
 const Confirmation = ({ close, orderData, error }) => {
@@ -19,7 +20,7 @@ const Confirmation = ({ close, orderData, error }) => {
 						</Typography>
 						<Typography variant="body1">
 							Confirmation email and reciept sent to{" "}
-							{orderData.shippingData.Email}
+							{Cookies.getJSON("User").email}
 						</Typography>
 					</>
 				)}

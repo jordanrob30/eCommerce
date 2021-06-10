@@ -1,14 +1,17 @@
 import { Box, Button, TextField } from "@material-ui/core";
+import Cookies from "js-cookie";
 
 import React, { useState } from "react";
 
 const ShippingForm = ({ next, back, setFormData }) => {
 	const [shippingData, setShippingData] = useState({
+		userId: Cookies.getJSON("User").id,
 		Firstname: "",
 		Lastname: "",
-		Address: "",
-		Email: "",
+		Address1: "",
+		Address2: "",
 		City: "",
+		Country: "",
 		PostalCode: "",
 	});
 
@@ -44,16 +47,15 @@ const ShippingForm = ({ next, back, setFormData }) => {
 					/>
 					<TextField
 						required
-						type="email"
-						label="Email"
-						onChange={(e) => handleChange("Email", e.target.value)}
+						type="text"
+						label="Address Line 1"
+						onChange={(e) => handleChange("Address1", e.target.value)}
 						fullWidth
 					/>
 					<TextField
-						required
 						type="text"
-						label="Address"
-						onChange={(e) => handleChange("Address", e.target.value)}
+						label="Address Line 2"
+						onChange={(e) => handleChange("Address2", e.target.value)}
 						fullWidth
 					/>
 					<TextField
@@ -61,6 +63,13 @@ const ShippingForm = ({ next, back, setFormData }) => {
 						type="text"
 						label="City"
 						onChange={(e) => handleChange("City", e.target.value)}
+						fullWidth
+					/>
+					<TextField
+						required
+						type="text"
+						label="Country"
+						onChange={(e) => handleChange("Country", e.target.value)}
 						fullWidth
 					/>
 					<TextField

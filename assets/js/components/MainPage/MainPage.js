@@ -82,7 +82,7 @@ const MainPage = ({ toggleTheme, login }) => {
 						"Content-Type": "application/json",
 					},
 				})
-				.then((res) => setAccountValues(res.data))
+				.then((res) => setAccountValues(res.data[0]))
 				.catch((err) => console.log(err));
 	}, []);
 
