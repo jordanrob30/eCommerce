@@ -24,12 +24,14 @@ class UserAddressRepository extends ServiceEntityRepository
         $this->entityManager = $entityManager;
     }
 
-    public function saveUserAddress(UserAddress $userAddress) {
+    public function saveUserAddress(UserAddress $userAddress)
+    {
         $this->entityManager->persist($userAddress);
         $this->entityManager->flush();
+        return $userAddress->getId();
     }
 
-    public function updateUserAddress(UserAddress $userAddress) : UserAddress
+    public function updateUserAddress(UserAddress $userAddress): UserAddress
     {
         $this->entityManager->persist($userAddress);
         $this->entityManager->flush();
@@ -41,5 +43,4 @@ class UserAddressRepository extends ServiceEntityRepository
         $this->entityManager->remove($userAddress);
         $this->entityManager->flush();
     }
-
 }
