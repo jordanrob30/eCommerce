@@ -21,6 +21,10 @@ const initialValues = {
 	email: "",
 	password: "",
 	roles: [],
+	line1: "",
+	city: "",
+	postcode: "",
+	country: ""
 };
 
 const initialErrors = {
@@ -102,6 +106,42 @@ const RegisterDialog = ({ login }) => {
 						type="password"
 						label="Password"
 						value={values.password}
+						onChange={handleChange}
+						fullWidth
+						required
+					/>
+					<TextField
+						id="line1"
+						type="text"
+						label="Line 1"
+						value={values.line1}
+						onChange={handleChange}
+						fullWidth
+						required
+					/>
+					<TextField
+						id="city"
+						type="text"
+						label="City"
+						value={values.city}
+						onChange={handleChange}
+						fullWidth
+						required
+					/>
+					<TextField
+						id="postcode"
+						type="text"
+						label="Postcode"
+						value={values.postcode}
+						onChange={handleChange}
+						fullWidth
+						required
+					/>
+					<TextField
+						id="country"
+						type="text"
+						label="Country"
+						value={values.country}
 						onChange={handleChange}
 						fullWidth
 						required

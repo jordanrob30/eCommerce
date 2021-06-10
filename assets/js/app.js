@@ -25,6 +25,7 @@ const App = () => {
 	const [loginDialog, setLoginDialog] = useState(false);
 	const [registerDialog, setRegisterDialog] = useState(false);
 	const [token, setToken] = useState(null);
+	const [accountDialog, setAccountDialog] = useState(false);
 
 	/**
 	 * Changes theme state based on current theme
@@ -136,6 +137,8 @@ const App = () => {
 		setDialog: setLoginDialog,
 		register: registerDialog,
 		setRegister: setRegisterDialog,
+		setAccountDialog: setAccountDialog,
+		accountDialog: accountDialog
 	};
 
 	useEffect(() => {

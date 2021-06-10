@@ -27,12 +27,6 @@ const actions = (user, toggleTheme) => {
 		icon: themeIcon,
 	};
 
-	const account = {
-		title: "Account",
-		action: () => {},
-		icon: <Person />,
-	};
-
 	const admin = {
 		title: "Admin",
 		action: adminLink,
@@ -42,7 +36,6 @@ const actions = (user, toggleTheme) => {
 	let actions = [themes];
 
 	if (user) {
-		user.roles.includes("ROLE_USER") && actions.push(account);
 		user.roles.includes("ROLE_AMIN") && actions.push(admin);
 	}
 
