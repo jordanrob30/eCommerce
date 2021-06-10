@@ -10,7 +10,7 @@ import {
 	Typography,
 	useTheme,
 } from "@material-ui/core";
-import { ChevronLeft, ChevronRight } from "@material-ui/icons";
+import {ChevronLeft, ChevronRight, Person} from "@material-ui/icons";
 import React from "react";
 import actions from "./actions";
 
@@ -43,6 +43,7 @@ const MenuDrawer = ({
 	login,
 	categories,
 	changeCategories,
+	openAccount
 }) => {
 	const theme = useTheme();
 	const classes = useStyles(theme);
@@ -67,14 +68,18 @@ const MenuDrawer = ({
 				Actions
 			</Typography>
 			<List className={classes.list}>
-				{actions(login.user ? login.user : null, toggleTheme).map(
-					(action, index) => (
-						<ListItem button key={index} onClick={action.action}>
-							<ListItemIcon>{action.icon}</ListItemIcon>
-							<ListItemText primary={action.title} />
-						</ListItem>
-					)
-				)}
+				{login.user ? (
+					<ListItem button key={0} onClick={openAccount}>
+						<ListItemIcon><Person/></ListItemIcon>
+						<ListItemText primary={"Account"} />
+					</ListItem>
+				) : ""}
+				{actions(login.user ? login.user : null, toggleTheme, login).map((action, index) => (
+					<ListItem button key={index + 1} onClick={action.action}>
+						<ListItemIcon>{action.icon}</ListItemIcon>
+						<ListItemText primary={action.title} />
+					</ListItem>
+				))}
 			</List>
 
 			<Divider />

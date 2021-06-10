@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\UserAddress;
+use App\Repository\UserAddressRepository;
 use App\Repository\UserRepository;
 use App\Entity\User;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -23,11 +25,13 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends AbstractController
 {
     private $userRepository;
+    private $userAddressRepository;
     private $stripe;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, UserAddressRepository $userAddressRepository)
     {
         $this->userRepository = $userRepository;
+        $this->userAddressRepository = $userAddressRepository;
         $this->stripe = new StripeClient($_ENV["STRIPE_API_KEY"]);
     }
 
@@ -71,6 +75,16 @@ class UserController extends AbstractController
                 );
 
                 $this->userRepository->saveUser($user);
+
+                //save address provided to the user
+                $userAddress = new UserAddress();
+                $userAddress->setUserid($user)
+                    ->setLine1($data["line1"])
+                    ->setCity($data["city"])
+                    ->setPostcode($data["postcode"])
+                    ->setCountry($data["country"]);
+                $this->userAddressRepository->saveUserAddress($userAddress);
+
                 return $this->readUsers();
             } catch (\Throwable $th) {
                 return new JsonResponse([
@@ -245,5 +259,22 @@ class UserController extends AbstractController
         }
 
         return false;
+    }
+
+    /**
+     * @Route("/read/all/me", name="api_users_read_me", methods={"GET"} )
+     */
+    public function readLoggedInUser(): JsonResponse
+    {
+        $user = $this->getUser();
+
+        $data[] = [
+            'id' => $user->getId(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'line1' => 'test'
+        ];
+
+        return new JsonResponse($data);
     }
 }

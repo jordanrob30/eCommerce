@@ -4,6 +4,7 @@ import axios from "axios";
 import CartDialog from "../Cart/CartDialog";
 import Cookies from "js-cookie";
 import CardDialog from "../Card/CardDialog";
+import AccountDialog from "../Account/AccountDialog";
 
 /**
  * @prop  {function} {toggleTheme} toggle theme function
@@ -16,6 +17,8 @@ const MainPage = ({ toggleTheme, login }) => {
 	const [cartDialog, setCartDialog] = useState(false);
 	const [cartSize, setcartSize] = useState(0);
 	const [checkoutDialog, setCheckoutDialog] = useState(false);
+	const [accountDialog, setAccountDialog] = useState(false);
+	const [accountValues, setAccountValues] = useState(false);
 
 	const closeCart = () => {
 		setCartDialog(false);
@@ -47,6 +50,15 @@ const MainPage = ({ toggleTheme, login }) => {
 		setCheckoutDialog(true);
 	};
 
+	const closeAccount = () => {
+		setAccountDialog(false);
+	};
+
+	const openAccount = () => {
+		setAccountDialog(true);
+	};
+
+
 	/**
 	 * on instantiation of the component current product and category
 	 * arrays are fetched from database and corresponding states are
@@ -62,6 +74,17 @@ const MainPage = ({ toggleTheme, login }) => {
 			.get("/api/category/read/all/")
 			.then((res) => setCategories(res.data))
 			.catch((err) => console.error(err));
+
+		axios
+			.get("/api/users/read/all/me", {
+				headers: {
+					Authorization: Cookies.getJSON("User").token,
+					"Content-Type": "application/json",
+				},
+			})
+			.then((res) => setAccountValues(res.data))
+			.catch((err) => console.log(err));
+
 	}, []);
 
 	/**
@@ -92,6 +115,7 @@ const MainPage = ({ toggleTheme, login }) => {
 				changeCategories={changeCategories}
 				openCart={openCart}
 				cartSize={cartSize}
+				openAccount={openAccount}
 			/>
 			<ProductPage
 				products={products}
@@ -106,6 +130,8 @@ const MainPage = ({ toggleTheme, login }) => {
 				openCheckout={openCheckout}
 			/>
 			<CheckoutDialog open={checkoutDialog} closeDialog={closeCheckout} />
+			<AccountDialog open={accountDialog} closeAccount={closeAccount} values={accountValues} setValues={setAccountValues}/>
+
 		</>
 	);
 };

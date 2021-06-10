@@ -44,6 +44,8 @@ const TaskBar = ({
 	changeCategories,
 	openCart,
 	cartSize,
+	openAccount
+
 }) => {
 	const theme = useTheme();
 	const [openMenu, setOpenMenu] = useState(false);
@@ -58,6 +60,7 @@ const TaskBar = ({
 				login={login}
 				categories={categories}
 				changeCategories={changeCategories}
+				openAccount={openAccount}
 			/>
 			<AppBar position="fixed">
 				<Toolbar>

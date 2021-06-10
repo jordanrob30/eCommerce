@@ -49,23 +49,13 @@ class OrderController extends AbstractController
         $errors = [];
 
         try {
+            $user = $this->userRepository->find($this->getUser()->getId());
 
-            // get user if not object
-            if(is_numeric($data['user']))
+            //use the first address found (for now, this can be changed to use multiple)
+            $userAddress = null;
+            foreach($this->getUser()->getUserAddresses() as $userAddress)
             {
-                $user = $this->userRepository->find($data["user"]);
-            }
-            else{
-                $user = $data["user"];
-            }
-
-            // get user address if not object
-            if(is_numeric($data['userAddress']))
-            {
-                $userAddress = $this->userAddressRepository->find($data["userAddress"]);
-            }
-            else{
-                $userAddress = $data["userAddress"];
+                break;
             }
 
             if (sizeof($data["products"]) == 0) {
